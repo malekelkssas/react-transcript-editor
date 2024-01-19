@@ -10,8 +10,9 @@
   margin-left: 1em;
 }
 
-.timeline::-webkit-scrollbar {
-  width: 0; /* Hide scrollbar in WebKit/Blink */
+.timeLine::-webkit-scrollbar {
+  width: 0;
+  /* Hide scrollbar in WebKit/Blink */
 }
 
 .timeLineLinesContainer {
