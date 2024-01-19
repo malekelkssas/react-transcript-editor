@@ -1,0 +1,52 @@
+/* .timeline {
+  position: relative;
+  height: 20px;
+}
+
+.timelineLinesContainer {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 2px;
+}
+
+.timelineLine {
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background-color: #ccc;
+}
+
+.timelineLineActive {
+  background-color: #548bf4;
+} */
+
+.timelineItem {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timelineLine {
+  height: 100%;
+  width: 1px;
+  background-color: #ccc;
+}
+
+.timelineLineActive {
+  background-color: #548bf4;
+  height: 10px;
+}
+
+.timelineNumber {
+  font-size: 10px;
+  color: #666;
+  /* margin-top: 1px; */
+}
+
+.timelineNumberActive {
+  color: #548bf4;
+}

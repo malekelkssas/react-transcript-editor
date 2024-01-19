@@ -8,19 +8,25 @@
 .main {
   margin-top: 1em;
   margin-bottom: 1em;
-  box-shadow: 0 0 10px #ccc; 
+  box-shadow: 0 0 10px #ccc;
 }
 
-.mainWithAudiio{
+.mainWithAudiio {
   margin-top: 1em;
   margin-bottom: 1em;
   box-shadow: 0 0 10px #ccc;
 }
 
-video{
+.videoTimeline {
+  margin-top: 2em;
+  margin-bottom: 4em;
+  box-shadow: 0 0 10px #f1f1f1;
+}
+
+video {
   margin-top: 1em;
   display: block;
-  box-shadow: 0 0 10px #ccc; 
+  box-shadow: 0 0 10px #ccc;
 }
 
 .help {
@@ -75,7 +81,8 @@ video{
   .aside {
     margin-left: auto;
   }
-  .mainWithAudiio{
+
+  .mainWithAudiio {
     margin-right: 20%;
     margin-left: 20%;
   }
@@ -96,9 +103,9 @@ video{
 
 
 /* Desktop size */
-@media  (min-width: 769px) and (max-width: 1020px){
+@media (min-width: 769px) and (max-width: 1020px) {
 
-  
+
   .grid {
     margin-top: 1em;
     margin-left: 1em;
@@ -118,7 +125,7 @@ video{
     padding: 0;
   }
 
-  .mainWithAudiio{
+  .mainWithAudiio {
     margin-top: 1em;
     margin-right: 0px;
     margin-left: 0px;
@@ -137,7 +144,7 @@ video{
     margin-right: auto;
   }
 
-  .mainWithAudiio{
+  .mainWithAudiio {
     margin-top: 1em;
     margin-left: 0;
     margin-right: 0;
@@ -162,7 +169,7 @@ video{
     margin-right: auto;
   }
 
-  .mainWithAudiio{
+  .mainWithAudiio {
     margin-left: 0;
     margin-right: 0;
   }
@@ -178,18 +185,19 @@ video{
 /* Mobile devices - excluding ipad*/
 @media (max-width: 767px) {
   .row {
-  display: block;
+    display: block;
   }
+
   .main {
     width: 100%;
     margin-top: 0.5em;
   }
 
-  .aside{
+  .aside {
     margin-top: 0px;
   }
 
-  .mainWithAudiio{
+  .mainWithAudiio {
     margin-left: 0;
     margin-right: 0;
   }
