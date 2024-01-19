@@ -1,28 +1,24 @@
-/* .timeline {
+.timeLine {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  height: 3em;
   position: relative;
-  height: 20px;
+  max-width: 80em;
+  margin-left: 1em;
 }
 
-.timelineLinesContainer {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  height: 2px;
+.timeline::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar in WebKit/Blink */
 }
 
-.timelineLine {
-  position: absolute;
-  height: 100%;
-  width: 1px;
-  background-color: #ccc;
+.timeLineLinesContainer {
+  padding-bottom: 10px;
 }
 
-.timelineLineActive {
-  background-color: #548bf4;
-} */
-
-.timelineItem {
+.timeLineItem {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -30,23 +26,33 @@
   justify-content: center;
 }
 
-.timelineLine {
+.timeLineNumber {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.1em;
+  margin-left: 0.2em;
+}
+
+.timeLineLine {
   height: 100%;
   width: 1px;
   background-color: #ccc;
 }
 
-.timelineLineActive {
-  background-color: #548bf4;
+.timeLineLineActive {
+  background-color: #084cc9;
   height: 10px;
 }
 
-.timelineNumber {
+.timeLineNumber {
   font-size: 10px;
   color: #666;
   /* margin-top: 1px; */
 }
 
-.timelineNumberActive {
+.timeLineNumberActive {
   color: #548bf4;
 }
