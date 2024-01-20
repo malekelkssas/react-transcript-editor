@@ -1,13 +1,31 @@
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  /* padding: 0.5em 0; */
+  border-bottom: 1px solid #ccc;
+  height: 5em;
+}
+
 .timeLine {
   display: flex;
-  justify-content: center;
+  align-items: center;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   height: 3em;
   position: relative;
   max-width: 80em;
-  margin-left: 1em;
+  width: 100%;
+  margin-left: 0.9em;
+}
+
+.tableIcon{
+  display: flex;
+  align-items: center;
+  /* height: 3em; */
+  margin-top: 1em;
 }
 
 .timeLine::-webkit-scrollbar {
@@ -15,7 +33,7 @@
 }
 
 .timeLineLinesContainer {
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
 }
 
 .timeLineItem {
@@ -30,10 +48,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1.1em;
-  margin-left: 0.2em;
+  margin-top: 0.5em;
 }
 
 .timeLineLine {
@@ -50,7 +65,6 @@
 .timeLineNumber {
   font-size: 10px;
   color: #666;
-  /* margin-top: 1px; */
 }
 
 .timeLineNumberActive {

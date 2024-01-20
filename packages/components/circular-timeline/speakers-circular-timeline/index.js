@@ -52,7 +52,7 @@ class SpeakersCircularTimeLine extends React.Component {
         circles.push(
           <>
           {isTalkMoment && 
-            <div title={`${this.state.speaker}\n${secondsToTimecode(this.state.startsObj[circleTime])}`} key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.props.currentTime < circleTime?this.state.color: "#00FF00", cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
+            <div title={`${this.state.speaker}\n${secondsToTimecode(this.state.startsObj[circleTime])}`} key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.state.color, cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
           }
           </>
         );

@@ -22,6 +22,20 @@
   box-shadow: 0 0 10px #f1f1f1;
 }
 
+.videoTimelineTable {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  position: relative;
+  max-width: 80em;
+  margin-left: 1em;
+}
+
+.videoTimelineTableBody{
+width: 100%;
+}
+
 video {
   margin-top: 1em;
   display: block;

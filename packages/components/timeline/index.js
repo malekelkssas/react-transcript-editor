@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './index.module.css';
 import { secondsToTimecode, timecodeToSeconds } from '../../util/timecode-converter';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 class TimeLine extends React.Component {
   constructor(props) {
@@ -100,9 +101,14 @@ class TimeLine extends React.Component {
 
      
     return (
-      <div className={styles.timeLine}>
-        {this.props.videoRef && <div className={styles.timeLineLinesContainer}>{renderTimelineLines()}</div>}
-      </div>
+      <tr className={styles.tableRow}>
+        <td className={styles.tableIcon}>
+          <FontAwesomeIcon icon={faClock} />
+        </td>
+        <td className={styles.timeLine}>
+              {this.props.videoRef && <div className={styles.timeLineLinesContainer}>{renderTimelineLines()}</div>}
+      </td>
+      </tr>
     );
   }
 }

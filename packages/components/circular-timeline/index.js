@@ -97,7 +97,7 @@ class CircularTimeLine extends React.Component {
          mediaDuration={this.props.mediaDuration}
           speaker={speaker}
           startsObj={this.state.speakers[speaker]}
-          currentTime={this.props.currentTime}
+          // currentTime={this.props.currentTime}
           setCurrentTime={this.setCurrentTime}
          />
         )
