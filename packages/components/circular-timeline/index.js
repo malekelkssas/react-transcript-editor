@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './index.module.css';
-import { secondsToTimecode, timecodeToSeconds } from '../../util/timecode-converter';
+import SpeakersCircularTimeLine from './speakers-circular-timeline';
+// import { secondsToTimecode, timecodeToSeconds } from '../../util/timecode-converter';
 
 
 class CircularTimeLine extends React.Component {
@@ -14,6 +14,10 @@ class CircularTimeLine extends React.Component {
 
   }
 
+  
+  roundToNearest10 = (number) => {
+    return Math.floor(number / 10) * 10;
+  };
   // these is a dublicate function from ./media-player.index.js {playMedia, setCurrentTime, isPlaying, pauseMedia, playMedia}
   // TODO: refactor 
 
@@ -74,10 +78,14 @@ class CircularTimeLine extends React.Component {
         this.props.transcriptData.blocks.map((block) => {
           // tmpSpeakers.add(block.data.speaker);
           if(!tmpSpeakers.hasOwnProperty(block.data.speaker)){
-            tmpSpeakers[block.data.speaker] = [];
+            tmpSpeakers[block.data.speaker] = {};
           }
-          tmpSpeakers[block.data.speaker].push(Math.floor(parseInt(block.data.start)));
+          if(!tmpSpeakers[block.data.speaker].hasOwnProperty(this.roundToNearest10(parseInt(block.data.start)))){
+              const numberNearest10 = this.roundToNearest10(parseInt(block.data.start));
+              tmpSpeakers[block.data.speaker][numberNearest10] =parseInt(block.data.start)};
+          
         })
+        console.log("tmpSpeakers", tmpSpeakers);
         this.setState({speakers: tmpSpeakers});
       }
 
@@ -91,10 +99,16 @@ class CircularTimeLine extends React.Component {
       // const mySet = new Set(myArray);
      
     return (
-      <div className={styles.circleContainer}>
-        the loop here
-        {/* TODO: here have the loop */}
-        {/* {renderCircleTimeline()} */}
+      <div>
+        {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
+         <SpeakersCircularTimeLine
+         mediaDuration={this.props.mediaDuration}
+          speaker={speaker}
+          startsObj={this.state.speakers[speaker]}
+          currentTime={this.props.currentTime}
+         />
+        )
+         )}
       </div>
     );
   }

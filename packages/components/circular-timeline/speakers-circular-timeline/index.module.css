@@ -2,11 +2,6 @@
 
 .circleContainer {
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* overflow-x: auto; */
-  /* overflow-y: hidden; */
-  /* white-space: nowrap; */
   height: 3em;
   position: relative;
   max-width: 80em;
@@ -18,11 +13,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 9px;
-  height: 9px;
-  border-radius: 70%;
-  /* background-color: #3498db; */
-  font-size: 12px;
+  width: 1em;
+  height: 1em;
+  max-width: 6px;
+  max-height: 6px;
+  border-radius: 100%;
+  /* font-size: 12px; */
 }
 
 

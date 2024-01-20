@@ -483,6 +483,8 @@ class TranscriptEditor extends React.Component {
 
     const circulartimeline = (<CircularTimeLine
       transcriptData={this.state.transcriptData}
+      mediaDuration={this.state.mediaDuration}
+      currentTime={this.state.currentTime}
       // currentTime={this.state.currentTime}
       // handleAnalyticsEvents={this.props.handleAnalyticsEvents}
       // videoRef={this.videoRef}

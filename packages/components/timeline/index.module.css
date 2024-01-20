@@ -12,7 +12,6 @@
 
 .timeLine::-webkit-scrollbar {
   width: 0;
-  /* Hide scrollbar in WebKit/Blink */
 }
 
 .timeLineLinesContainer {
