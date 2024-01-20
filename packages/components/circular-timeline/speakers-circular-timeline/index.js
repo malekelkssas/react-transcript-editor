@@ -40,24 +40,19 @@ class SpeakersCircularTimeLine extends React.Component {
 
   render() {
 
-    console.log("circle", this.state.startsObj, this.state.speaker);
     const renderCircleTimeline = () => {
       const circles = [];
       const TIMELINE_SEGMENT_LENGTH = 1800;
       const totalCircles = timecodeToSeconds(this.props.mediaDuration);
-      console.log("totalCircles", totalCircles);
-      
   
-      for (let i = 0; i < totalCircles; i++) {
+      for (let circleTime = 0; circleTime < totalCircles; circleTime++) {
         // hasOwn = (obj, key) => Object.prototype..call(obj, key);
-        const isTalkMoment = this.state.startsObj.hasOwnProperty(i);
-        console.log("isTalkMoment", isTalkMoment, "moment", i);
-        // const minute = i / 60;
-        // TODO: tooltip for the speaker and the minute
+        const isTalkMoment = this.state.startsObj.hasOwnProperty(circleTime);
+        
         circles.push(
           <>
           {isTalkMoment && 
-            <div title={`${this.state.speaker}\n${secondsToTimecode(this.state.startsObj[i])}`} key={`speaker_${this.state.speaker}_${i}`} className={styles.circleItem} style={{ left: `${(i / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.props.currentTime < i?this.state.color: "#00FF00" }}/>
+            <div title={`${this.state.speaker}\n${secondsToTimecode(this.state.startsObj[circleTime])}`} key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.props.currentTime < circleTime?this.state.color: "#00FF00", cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
           }
           </>
         );

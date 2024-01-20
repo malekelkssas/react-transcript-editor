@@ -485,10 +485,8 @@ class TranscriptEditor extends React.Component {
       transcriptData={this.state.transcriptData}
       mediaDuration={this.state.mediaDuration}
       currentTime={this.state.currentTime}
-      // currentTime={this.state.currentTime}
-      // handleAnalyticsEvents={this.props.handleAnalyticsEvents}
-      // videoRef={this.videoRef}
-      // mediaDuration={this.state.mediaDuration}
+      videoRef={this.videoRef}
+      handleAnalyticsEvents={this.props.handleAnalyticsEvents}
     />);
 
     return (
