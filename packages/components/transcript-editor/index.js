@@ -13,6 +13,7 @@ import style from "./index.module.css";
 // TODO: move to another file with tooltip - rename HowDoesThisWork or HelpMessage
 import HowDoesThisWork from "./src/HowDoesThisWork.js";
 import TimeLine from "../timeline/index.js";
+import CircularTimeLine from "../circular-timeline/index.js";
 
 const exportOptionsList = [
   { value: "txt", label: "Text file" },
@@ -480,11 +481,23 @@ class TranscriptEditor extends React.Component {
       mediaDuration={this.state.mediaDuration}
     />);
 
+    const circulartimeline = (<CircularTimeLine
+      transcriptData={this.state.transcriptData}
+      // currentTime={this.state.currentTime}
+      // handleAnalyticsEvents={this.props.handleAnalyticsEvents}
+      // videoRef={this.videoRef}
+      // mediaDuration={this.state.mediaDuration}
+    />);
+
     return (
       <div className={style.container}>
         {this.props.mediaUrl ? header : null}
         {this.props.mediaUrl ? 
-        <section className={style.videoTimeline}>{timeline} </section>: null}
+        <section className={style.videoTimeline}>
+          <>{timeline} </>
+          <>{circulartimeline} </>
+          </section>: null}
+        
 
         <div className={style.grid}>
           <section className={style.row} style={this.state.gridDisplay}>

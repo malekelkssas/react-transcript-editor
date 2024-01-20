@@ -1,0 +1,34 @@
+/* CircleTimeline.module.css */
+
+.circleContainer {
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* overflow-x: auto; */
+  /* overflow-y: hidden; */
+  /* white-space: nowrap; */
+  height: 3em;
+  position: relative;
+  max-width: 80em;
+  margin-left: 1em;
+}
+
+.circleItem {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  height: 9px;
+  border-radius: 70%;
+  /* background-color: #3498db; */
+  font-size: 12px;
+}
+
+
+.timelineLine {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #3498db;
+}
