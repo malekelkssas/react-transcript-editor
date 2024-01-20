@@ -3,7 +3,10 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  /* padding: 0.5em 0; */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #F1F1F1;
   border-bottom: 1px solid #ccc;
   height: 5em;
 }
@@ -11,12 +14,8 @@
 .timeLine {
   display: flex;
   align-items: center;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  height: 3em;
+  height: 5em;
   position: relative;
-  max-width: 80em;
   width: 100%;
   margin-left: 0.9em;
 }
@@ -24,8 +23,8 @@
 .tableIcon{
   display: flex;
   align-items: center;
-  /* height: 3em; */
-  margin-top: 1em;
+  margin-top: 0.5em;
+  height: 5em;
 }
 
 .timeLine::-webkit-scrollbar {

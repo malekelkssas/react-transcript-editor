@@ -23,17 +23,27 @@
 }
 
 .videoTimelineTable {
-  display: flex;
-  overflow-x: auto;
   overflow-y: hidden;
+  display: flex;
   white-space: nowrap;
   position: relative;
+  overflow-x: auto;
+  white-space: nowrap;
   max-width: 80em;
   margin-left: 1em;
+  max-height: 12em;
 }
 
-.videoTimelineTableBody{
-width: 100%;
+
+
+.videoTimelineTableBody {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.videoTimelineTableBody::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 video {
