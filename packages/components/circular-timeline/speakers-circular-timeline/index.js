@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styles from './index.module.css';
 // import { secondsToTimecode, timecodeToSeconds } from ;
 
-// import ToolTip from '../tooltip/index.js';
 import { secondsToTimecode, timecodeToSeconds } from '../../../util/timecode-converter/index.js';
 
 class SpeakersCircularTimeLine extends React.Component {
@@ -33,10 +32,6 @@ class SpeakersCircularTimeLine extends React.Component {
   return color;
   };
 
-  
-
-  // speaker, [starts]
-
 
   render() {
 
@@ -46,16 +41,14 @@ class SpeakersCircularTimeLine extends React.Component {
       const totalCircles = timecodeToSeconds(this.props.mediaDuration);
   
       for (let circleTime = 0; circleTime < totalCircles; circleTime++) {
-        // hasOwn = (obj, key) => Object.prototype..call(obj, key);
         const isTalkMoment = this.state.startsObj.hasOwnProperty(circleTime);
-        
+        if(isTalkMoment){
         circles.push(
-          <>
-          {isTalkMoment && 
-            <div title={`${this.state.speaker}\n${secondsToTimecode(this.state.startsObj[circleTime])}`} key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.state.color, cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
-          }
-          </>
+          <div key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItemContainer}>
+            <div title={`${secondsToTimecode(this.state.startsObj[circleTime])}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.state.color, cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
+          </div>
         );
+        }
   
         // Connect circles with lines, excluding the last circle
         // if (i < totalCircles - 1) {
@@ -71,9 +64,15 @@ class SpeakersCircularTimeLine extends React.Component {
     };
      
     return (
-    <div className={styles.circleContainer}>
-        {renderCircleTimeline()}
-    </div>
+    <tr className={styles.tableRow}>
+        <td className={styles.tableSpeaker}>
+         <p> {this.state.speaker.substring(0, 5)} </p>
+        </td>
+        <td className={styles.circleContainer} >
+              {renderCircleTimeline()}
+      </td>
+      {/* <td style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, borderBo: "1px solid #ccc" }}/> */}
+      </tr>
     );
   }
 }

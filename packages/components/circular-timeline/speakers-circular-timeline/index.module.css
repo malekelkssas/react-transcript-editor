@@ -1,11 +1,39 @@
-/* CircleTimeline.module.css */
-
 .circleContainer {
   display: flex;
+  align-items: center;
   height: 3em;
   position: relative;
-  max-width: 80em;
-  margin-left: 1em;
+  width: 100%;
+  margin-left: 1.8em;
+}
+
+.tableSpeaker {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  min-width: 3em;
+  max-width: 5em;
+  font-size: 12px;
+
+  position: sticky;
+  left: 0;
+  z-index: 1; 
+  min-height: 2em;
+  background-color: #f1f1f1f1;
+}
+
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-height: 5em;
+  position: relative;
+}
+
+.circleItemContainer{
+  max-width: 6px;
+  max-height: 6px;
 }
 
 .circleItem {
@@ -13,12 +41,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1em;
-  height: 1em;
-  max-width: 6px;
-  max-height: 6px;
-  border-radius: 100%;
-  /* font-size: 12px; */
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
 

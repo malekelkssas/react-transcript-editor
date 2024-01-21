@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './index.module.css'
 import PropTypes from 'prop-types';
 import SpeakersCircularTimeLine from './speakers-circular-timeline';
 import { secondsToTimecode, timecodeToSeconds } from '../../util/timecode-converter';
@@ -74,10 +75,9 @@ class CircularTimeLine extends React.Component {
     // console.log({transcriptData: this.props.transcriptData});
 
     
-      if(this.props.transcriptData && !this.state.speakers ){
+      if(this.props.transcriptData && this.props.transcriptData.blocks &&!this.state.speakers ){
         const tmpSpeakers = {};
         this.props.transcriptData.blocks.map((block) => {
-          // tmpSpeakers.add(block.data.speaker);
           if(!tmpSpeakers.hasOwnProperty(block.data.speaker)){
             tmpSpeakers[block.data.speaker] = {};
           }
@@ -90,18 +90,21 @@ class CircularTimeLine extends React.Component {
       }
      
     return (
-      <div>
+      <div className={styles.SpeakersCircularTimeLineContainer} >
         {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
+         <>
          <SpeakersCircularTimeLine
          key={`speaker_${speaker}_circular_timeline`}
          mediaDuration={this.props.mediaDuration}
           speaker={speaker}
           startsObj={this.state.speakers[speaker]}
-          // currentTime={this.props.currentTime}
           setCurrentTime={this.setCurrentTime}
          />
+         <div style={{width: `${(timecodeToSeconds(this.props.mediaDuration)/ 1800) * 95}%` ,borderBottom: "1px solid #ccc"}}/>
+         </>
         )
          )}
+         
       </div>
     );
   }

@@ -65,7 +65,6 @@ class TimeLine extends React.Component {
   render() {
 
     const renderTimelineLines = () => {
-      const TIMELINE_SEGMENT_LENGTH = 1800;
       const MINUTE_TO_SECONDS = 60;
       const MINUTE_SEGMENT = 10;
       const mediaDuration = timecodeToSeconds(this.props.mediaDuration);
@@ -82,31 +81,59 @@ class TimeLine extends React.Component {
         const isMinLine = (lineTime % MINUTE_SEGMENT) === 0;
         const lineStyle = {
           height: isMajorLine ? '10px' : '5px', 
+          minHeight: '20' 
         };
-        
         lines.push(
-        <>
-          <div key={`line-${lineTime}`} className={styles.timeLineItem} style={{ left: `${((lineTime /TIMELINE_SEGMENT_LENGTH))  * 98}%`, cursor: 'pointer'}} onClick={()=>this.setCurrentTime(lineTime)}>
+            <div style={{display: "flex", flexDirection:"column", alignItems: "end", marginLeft: `0.5px`, maxHeight:"20px"}}>
+          <div key={`min-line-${lineTime}`} className={styles.timeLineItem} style={{minHeight: "10px", marginTop:"7px", cursor: 'pointer'}} onClick={()=>this.setCurrentTime(lineTime)}>
             {isMinLine && <div className={lineClassName} style={lineStyle}/>}
-          </div>
-          <div key={`key-${lineTime}`} className={styles.timeLineNumber} style={{ left: `${((lineTime /TIMELINE_SEGMENT_LENGTH))  * 98}%`, cursor: 'pointer',}} onClick={()=>this.setCurrentTime(lineTime)}>
-            {isMajorLine && <div className={numberClassName}>{minute}</div>}
-          </div>
-        </>
+          </div> 
+            <div key={`major-line-${lineTime}`} className={styles.timeLineNumber} style={{minHeight: "10px", marginTop:"7px", maxWidth:"1px",  cursor: 'pointer'}} onClick={()=>this.setCurrentTime(lineTime)}>
+            {isMajorLine && <div className={numberClassName} >{minute}</div>}
+            </div> 
+            </div>
           );
         }
     
         return lines;
       };
 
+      const renderTimelineNumbers = () => {
+        const MINUTE_TO_SECONDS = 60;
+        const mediaDuration = timecodeToSeconds(this.props.mediaDuration);
+        const totalLines = mediaDuration;
+        const lines = [];
+        for (let lineTime = 0; lineTime <= totalLines; lineTime++) {
+          const isActive = lineTime <= this.props.currentTime;
+          
+  
+          
+          
+          const isMajorLine = (lineTime % MINUTE_TO_SECONDS) === 0;
+  
+            lines.push(
+              
+                // <div key={`major-line-${lineTime}`} className={styles.timeLineNumber} style={{ marginLeft: `0.56px`, cursor: 'pointer'}} onClick={()=>this.setCurrentTime(lineTime)}>
+                //   {isMajorLine && <div className={numberClassName} style={{maxWidth: "1px"}}>{minute}</div>}
+                // </div> 
+              
+            )
+  
+            
+          }
+      
+          return lines;
+        };
+
      
     return (
-      <tr className={styles.tableRow}>
+      <tr className={styles.tableRow} >
         <td className={styles.tableIcon}>
           <FontAwesomeIcon icon={faClock} />
         </td>
         <td className={styles.timeLine}>
-              {this.props.videoRef && <div className={styles.timeLineLinesContainer}>{renderTimelineLines()}</div>}
+              {this.props.videoRef && <div style={{display: "flex", flexDirection:"row", position:"relative"}}>{renderTimelineLines()}</div>}
+              {/* {this.props.videoRef &&<div style={{display: "flex", flexDirection:"row", marginLeft: "1px"}}> {renderTimelineNumbers()}</div>} */}
       </td>
       </tr>
     );
