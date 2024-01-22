@@ -37,27 +37,25 @@ class SpeakersCircularTimeLine extends React.Component {
 
     const renderCircleTimeline = () => {
       const circles = [];
-      const TIMELINE_SEGMENT_LENGTH = 1800;
       const totalCircles = timecodeToSeconds(this.props.mediaDuration);
   
       for (let circleTime = 0; circleTime < totalCircles; circleTime++) {
         const isTalkMoment = this.state.startsObj.hasOwnProperty(circleTime);
-        if(isTalkMoment){
+        const isMajorLine = (circleTime % 60) === 0;
+        const isMinLine = (circleTime % 10) === 0;
+
+        const lineStyle = {
+          height: isMajorLine ? '10px' : '5px', 
+          
+        };
+
         circles.push(
-          <div key={`speaker_${this.state.speaker}_${circleTime}`} className={styles.circleItemContainer}>
-            <div title={`${secondsToTimecode(this.state.startsObj[circleTime])}`} className={styles.circleItem} style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, backgroundColor: this.state.color, cursor: 'pointer' }} onClick={()=>this.props.setCurrentTime(this.state.startsObj[circleTime])}/>
-          </div>
+              <div style={{display: "flex", flexDirection:"column", alignItems: "end", marginLeft: `0.5px`, maxHeight:"20px"}}>
+                <div  style={{minHeight: "10px", marginTop:"7px", cursor: isTalkMoment? 'pointer':'', maxWidth: "1px"}} title={`${secondsToTimecode(this.state.startsObj[circleTime])}`} onClick={()=> { if(isTalkMoment) this.props.setCurrentTime(this.state.startsObj[circleTime])}}>
+                  {isMinLine && <div className={styles.circleItem} style={{...lineStyle, backgroundColor: isTalkMoment? this.state.color: "#ccc"}} />}
+                </div> 
+              </div>
         );
-        }
-  
-        // Connect circles with lines, excluding the last circle
-        // if (i < totalCircles - 1) {
-        //   circles.push(
-        //     <svg key={`line-${i}`} className={styles.timelineLine} style={{ left: `${((i + 0.5) / totalCircles) * 98}%` }}>
-        //       <line x1="0" y1="50%" x2="100%" y2="50%" />
-        //     </svg>
-        //   );
-        // }
       }
   
       return circles;
@@ -66,12 +64,13 @@ class SpeakersCircularTimeLine extends React.Component {
     return (
     <tr className={styles.tableRow}>
         <td className={styles.tableSpeaker}>
-         <p> {this.state.speaker.substring(0, 5)} </p>
+         <div style={{ maxWidth: "4em", minWidth:"4em"}}>
+         {this.state.speaker.substring(0, 5)}
+         </div>
         </td>
         <td className={styles.circleContainer} >
-              {renderCircleTimeline()}
+        <div style={{display: "flex", flexDirection:"row", position:"relative"}}>{renderCircleTimeline()}</div>
       </td>
-      {/* <td style={{ left: `${(circleTime / TIMELINE_SEGMENT_LENGTH) * 98}%`, borderBo: "1px solid #ccc" }}/> */}
       </tr>
     );
   }

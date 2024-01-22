@@ -18,17 +18,16 @@
 }
 
 .videoTimeline {
+  margin-top: 1em;
   box-shadow: 0 0 10px #f1f1f1;
 }
 
 .videoTimelineTable {
-  overflow-y: hidden;
+  overflow-y: auto;
   display: flex;
-  white-space: nowrap;
   position: relative;
   overflow-x: auto;
   white-space: nowrap;
-  /* min-width: 80em; */
   margin-left: 1em;
   max-height: 12em;
 }
@@ -36,13 +35,11 @@
 
 
 .videoTimelineTableBody {
-  overflow-y: auto;
-  margin-top: 1em;
-  /* width: 100%; */
+  margin-top: 0.5em;
 }
 
 
-.videoTimelineTableBody::-webkit-scrollbar {
+.videoTimelineTable::-webkit-scrollbar {
   width: 0;
   height: 0;
 }

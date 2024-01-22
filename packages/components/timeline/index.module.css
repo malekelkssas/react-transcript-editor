@@ -1,14 +1,11 @@
 .tableRow {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  /* flex-direction: row; */
   align-items: start;
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: #f1f1f1f1;
-
-  
+  background-color: #f1f1f1f1;  
 }
 
 .timeLine {
@@ -16,46 +13,22 @@
   flex-direction: column;
   position: relative;
   min-height: 2em;
-  margin-left: 0.9em;
-
   border-bottom: 1px solid #ccc;
-}
-
-.tableIcon {
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  min-width: 3em;
-  max-width: 5em;
-  
-  position: sticky;
-  left: 0;
-  z-index: 1; 
-  min-height: 2em;
-  background-color: #f1f1f1f1;
 }
 
 .timeLine::-webkit-scrollbar {
   width: 0;
 }
 
-
-.timeLineItem {
-  /* position: relative;
-  display: block; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* min-height: 1em; */
-  /* margin-bottom: 10px; */
-  /* margin-bottom: 10px; */
-}
-
-.timeLineNumber {
-  /* position: relative;
+.tableIcon {
   display: flex;
-  flex-direction: column; */
-  /* margin-bottom: 10px; */
+  align-items: start;
+  justify-content: center;
+  position: sticky;
+  left: 0;
+  z-index: 1; 
+  min-height: 2.1em;
+  background-color: #f1f1f1f1;
 }
 
 .timeLineLine {

@@ -3,53 +3,57 @@
   align-items: center;
   height: 3em;
   position: relative;
-  width: 100%;
-  margin-left: 1.8em;
+  /* width: 100%; */
+  /* margin-left: 0.9em; */
+  max-height: 2em;
+  border-bottom: 1px solid #ccc;
+
+  /* display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 2em; */
 }
+
+.circleContainer::-webkit-scrollbar {
+  width: 0;
+}
+
+
 
 .tableSpeaker {
   display: flex;
   align-items: center;
-  text-align: center;
   justify-content: center;
-  min-width: 3em;
-  max-width: 5em;
+  width: 4em;
   font-size: 12px;
-
   position: sticky;
   left: 0;
-  z-index: 1; 
+  z-index: 1;
   min-height: 2em;
   background-color: #f1f1f1f1;
+
+}
+
+.timeLineLine {
+  width: 1px;
+  background-color: #ccc;
 }
 
 .tableRow {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  max-height: 5em;
-  position: relative;
-}
-
-.circleItemContainer{
-  max-width: 6px;
-  max-height: 6px;
+  align-items: start;
 }
 
 .circleItem {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 6px;
-  height: 6px;
+  width: 1px;
+  height: 10px;
   border-radius: 50%;
 }
 
 
 .timelineLine {
   position: absolute;
-  width: 100%;
   height: 1px;
   background-color: #3498db;
 }

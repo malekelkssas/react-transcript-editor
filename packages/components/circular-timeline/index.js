@@ -92,7 +92,6 @@ class CircularTimeLine extends React.Component {
     return (
       <div className={styles.SpeakersCircularTimeLineContainer} >
         {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
-         <>
          <SpeakersCircularTimeLine
          key={`speaker_${speaker}_circular_timeline`}
          mediaDuration={this.props.mediaDuration}
@@ -100,8 +99,6 @@ class CircularTimeLine extends React.Component {
           startsObj={this.state.speakers[speaker]}
           setCurrentTime={this.setCurrentTime}
          />
-         <div style={{width: `${(timecodeToSeconds(this.props.mediaDuration)/ 1800) * 95}%` ,borderBottom: "1px solid #ccc"}}/>
-         </>
         )
          )}
          
