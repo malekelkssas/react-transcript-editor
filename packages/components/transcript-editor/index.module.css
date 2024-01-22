@@ -32,13 +32,6 @@
   max-height: 12em;
 }
 
-
-
-.videoTimelineTableBody {
-  margin-top: 0.5em;
-}
-
-
 .videoTimelineTable::-webkit-scrollbar {
   width: 0;
   height: 0;

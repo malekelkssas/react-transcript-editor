@@ -474,6 +474,9 @@ class TranscriptEditor extends React.Component {
       />
     );
 
+    // playMedia={this.handlePlayMedia} => this.props.playMedia(true); => this.props.playMedia(false);
+    // isPlaying={this.handleIsPlaying}
+
     const timeline = (<TimeLine
       currentTime={this.state.currentTime}
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
@@ -483,9 +486,9 @@ class TranscriptEditor extends React.Component {
 
     const circulartimeline = (<CircularTimeLine
       transcriptData={this.state.transcriptData}
-      mediaDuration={this.state.mediaDuration}
-      videoRef={this.videoRef}
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
+      videoRef={this.videoRef}
+      mediaDuration={this.state.mediaDuration}
     />);
 
     return (
@@ -494,12 +497,12 @@ class TranscriptEditor extends React.Component {
         {this.props.mediaUrl ? 
         <section className={style.videoTimeline}>
           <table className={style.videoTimelineTable}>
-            <tbody className={style.videoTimelineTableBody}>
-              <>{timeline} </>
-              <>{circulartimeline} </>
+            <tbody>
+              <>{timeline}</>
+              <>{circulartimeline}</>
             </tbody>
           </table>
-          </section>
+        </section>
           : null}
         
 

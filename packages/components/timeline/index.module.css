@@ -1,23 +1,23 @@
 .tableRow {
   display: flex;
-  /* flex-direction: row; */
   align-items: start;
   position: sticky;
+  background-color: #f1f1f1f1;
   top: 0;
   z-index: 2;
-  background-color: #f1f1f1f1;  
 }
 
 .timeLine {
   display: flex;
-  flex-direction: column;
   position: relative;
-  min-height: 2em;
+  min-height: 2.1em;
   border-bottom: 1px solid #ccc;
 }
 
-.timeLine::-webkit-scrollbar {
-  width: 0;
+.timeLineRow {
+  display: flex;
+  flex-direction: row;
+  position: relative;
 }
 
 .tableIcon {
@@ -25,10 +25,12 @@
   align-items: start;
   justify-content: center;
   position: sticky;
-  left: 0;
-  z-index: 1; 
-  min-height: 2.1em;
   background-color: #f1f1f1f1;
+  left: 0;
+  z-index: 1;
+  min-height: 2.1em;
+  min-width: 3em;
+  max-width: 3em;
 }
 
 .timeLineLine {
@@ -47,4 +49,24 @@
 
 .timeLineNumberActive {
   color: #548bf4;
+}
+
+.lineNumberContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  cursor: pointer;
+  margin-left: 0.5px;
+  max-height: 20px;
+}
+
+.lineContainer {
+  min-height: 10px;
+  margin-top: 7px;
+}
+
+.numberContainer {
+  min-height: 10px;
+  margin-top: 7px;
+  max-width: 1px;
 }

@@ -1,42 +1,24 @@
 .circleContainer {
   display: flex;
-  align-items: center;
-  height: 3em;
   position: relative;
-  /* width: 100%; */
-  /* margin-left: 0.9em; */
+  height: 3em;
   max-height: 2em;
   border-bottom: 1px solid #ccc;
-
-  /* display: flex;
-  flex-direction: column;
-  position: relative;
-  min-height: 2em; */
 }
-
-.circleContainer::-webkit-scrollbar {
-  width: 0;
-}
-
-
 
 .tableSpeaker {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4em;
-  font-size: 12px;
   position: sticky;
+  background-color: #f1f1f1f1;
   left: 0;
   z-index: 1;
   min-height: 2em;
-  background-color: #f1f1f1f1;
-
-}
-
-.timeLineLine {
-  width: 1px;
-  background-color: #ccc;
+  width: 4em;
+  font-size: 12px;
+  max-width: 4em;
+  min-width: 4em;
 }
 
 .tableRow {
@@ -51,9 +33,22 @@
   border-radius: 50%;
 }
 
+.speakerLineRow {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
 
-.timelineLine {
-  position: absolute;
-  height: 1px;
-  background-color: #3498db;
+.speakerLineContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  margin-left: 0.5px;
+  max-height: 20px;
+}
+
+.speakerContainer {
+  min-height: 10px;
+  margin-top: 7px;
+  max-width: 1px;
 }
