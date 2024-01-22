@@ -38,7 +38,7 @@ class SpeakersCircularTimeLine extends React.Component {
      
     return (
     <tr className={styles.tableRow}>
-      <td className={styles.tableSpeaker}>
+      <td title={this.props.speaker} className={styles.tableSpeaker}>
           {this.props.speaker.substring(0, 5)}
       </td>
       <td className={styles.circleContainer}>

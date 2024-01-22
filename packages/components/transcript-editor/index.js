@@ -474,14 +474,12 @@ class TranscriptEditor extends React.Component {
       />
     );
 
-    // playMedia={this.handlePlayMedia} => this.props.playMedia(true); => this.props.playMedia(false);
-    // isPlaying={this.handleIsPlaying}
-
     const timeline = (<TimeLine
       currentTime={this.state.currentTime}
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
       videoRef={this.videoRef}
       mediaDuration={this.state.mediaDuration}
+      setCurrentTime={this.setCurrentTime}
     />);
 
     const circulartimeline = (<CircularTimeLine
@@ -489,6 +487,8 @@ class TranscriptEditor extends React.Component {
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
       videoRef={this.videoRef}
       mediaDuration={this.state.mediaDuration}
+      sttJsonType={this.props.sttJsonType}
+      setCurrentTime={this.setCurrentTime}
     />);
 
     return (

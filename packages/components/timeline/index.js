@@ -11,20 +11,6 @@ class TimeLine extends React.Component {
 
   }
  
-  // TODO: refactor setCurrentTime
-  // TODO: ask about handleAnalyticsEvents
-
-  setCurrentTime = newCurrentTime => {
-    if (newCurrentTime !== '' && newCurrentTime !== null) {
-      const newCurrentTimeInSeconds = timecodeToSeconds(newCurrentTime);
-      const videoRef = this.props.videoRef.current;
-
-      if (videoRef.readyState === 4) {
-        videoRef.currentTime = newCurrentTimeInSeconds;
-      }
-    }
-  };
-
   render() {
 
     const renderTimelineLines = () => {
@@ -49,7 +35,7 @@ class TimeLine extends React.Component {
         };
         
         lines.push(
-        <div className={styles.lineNumberContainer} key={`time-line-number-${lineTime}`} onClick={()=>this.setCurrentTime(lineTime)}>
+        <div className={styles.lineNumberContainer} key={`time-line-number-${lineTime}`} onClick={()=>this.props.setCurrentTime(lineTime)}>
           <div className={styles.lineContainer} >
             {isMinLine && <div className={lineClassName} style={lineStyle}/>}
           </div> 
@@ -62,8 +48,6 @@ class TimeLine extends React.Component {
     
         return lines;
       };
-
-
      
     return (
       <tr className={styles.tableRow} >
@@ -83,6 +67,7 @@ TimeLine.propTypes = {
   handleAnalyticsEvents: PropTypes.func,
   videoRef: PropTypes.object.isRequired,
   mediaDuration: PropTypes.string,
+  setCurrentTime: PropTypes.func,
 };
 
 export default TimeLine;
