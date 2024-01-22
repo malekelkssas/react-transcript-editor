@@ -1,4 +1,4 @@
-.circleContainer {
+.lineContainer {
   display: flex;
   position: relative;
   height: 3em;
@@ -27,7 +27,7 @@
   align-items: start;
 }
 
-.circleItem {
+.lineItem {
   width: 1px;
   height: 10px;
   border-radius: 50%;

@@ -1,11 +1,11 @@
 import React from 'react';
 import styles from './index.module.css'
 import PropTypes from 'prop-types';
-import SpeakersCircularTimeLine from './speakers-circular-timeline';
+import SpeakerRowTimeLine from './speaker-row-timeline';
 import sttJsonAdapter from '../../stt-adapters';
 
 
-class CircularTimeLine extends React.Component {
+class SpeakerTimeLine extends React.Component {
   constructor(props) {
     super(props);
 
@@ -34,6 +34,7 @@ class CircularTimeLine extends React.Component {
           const numberNearest10 = this.roundToNearest10(parseInt(block.data.start));
           tmpSpeakers[block.data.speaker][numberNearest10] =parseInt(block.data.start)};
         })
+        console.log(tmpSpeakers);
         this.setState({speakers: tmpSpeakers});
       }
   }
@@ -46,9 +47,9 @@ class CircularTimeLine extends React.Component {
   render() {
  
     return (
-    <div className={styles.speakersCircularTimeLineContainer}>
+    <div className={styles.speakerRowTimeLineContainer}>
       {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
-      <SpeakersCircularTimeLine
+      <SpeakerRowTimeLine
         key={`speaker_${speaker}_circular_timeline`}
         mediaDuration={this.props.mediaDuration}
         speaker={speaker}
@@ -62,7 +63,7 @@ class CircularTimeLine extends React.Component {
   }
 }
 
-CircularTimeLine.propTypes = {
+SpeakerTimeLine.propTypes = {
   transcriptData: PropTypes.object,
   handleAnalyticsEvents: PropTypes.func,
   videoRef: PropTypes.object.isRequired,
@@ -71,4 +72,4 @@ CircularTimeLine.propTypes = {
   setCurrentTime: PropTypes.func,
 };
 
-export default CircularTimeLine;
+export default SpeakerTimeLine;
