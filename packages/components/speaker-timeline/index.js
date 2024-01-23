@@ -3,6 +3,7 @@ import styles from './index.module.css'
 import PropTypes from 'prop-types';
 import SpeakerRowTimeLine from './speaker-row-timeline';
 import sttJsonAdapter from '../../stt-adapters';
+import { timecodeToSeconds } from '../../util/timecode-converter';
 
 
 class SpeakerTimeLine extends React.Component {
@@ -21,11 +22,10 @@ class SpeakerTimeLine extends React.Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    return nextProps !== this.props || nextState.hasLoadedData;
+    return timecodeToSeconds(nextProps.mediaDuration) !== timecodeToSeconds(this.props.mediaDuration) || nextProps.transcriptData != this.props.transcriptData;
   };
 
   loadData() {
-    if(!this.state.speakers && this.props.transcriptData){
       const { blocks } = sttJsonAdapter(
         this.props.transcriptData,
         this.props.sttJsonType
@@ -40,7 +40,6 @@ class SpeakerTimeLine extends React.Component {
           tmpSpeakers[block.data.speaker][numberNearest10] = parseInt(block.data.start)};
         })
         this.setState({speakers: tmpSpeakers, hasLoadedData: true});
-      }
   }
 
   

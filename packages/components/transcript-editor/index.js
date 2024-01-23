@@ -499,8 +499,8 @@ class TranscriptEditor extends React.Component {
           <table className={style.videoTimelineTable}>
             <tbody className={style.videoTimelineBody}>
               <div className={style.videoTimelineContainer}>
-              {timeline}
-              {speakertimeline}
+              <>{timeline}</>
+              <>{speakertimeline}</>
               </div>
             </tbody>
           </table>
