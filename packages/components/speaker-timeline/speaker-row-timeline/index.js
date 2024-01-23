@@ -28,9 +28,9 @@ class SpeakerRowTimeLine extends React.Component {
         };
 
         lines.push(
-              <div key={`speaker-${this.props.speaker}-line-${lineTime}`} className={styles.speakerLineContainer} style={{ cursor: `${isTalkMoment || lastTalkingMoment? 'pointer':''}`}} onClick={()=> { if(isTalkMoment || lastTalkingMoment) this.props.setCurrentTime(this.props.startsObj[isTalkMoment?lineTime :isLastTalkingMoment])}}>
+              <div key={`speaker-${this.props.speaker}-line-${lineTime}`} title={isTalkMoment || lastTalkingMoment?secondsToTimecode(this.props.startsObj[isTalkMoment?lineTime :isLastTalkingMoment]): undefined} className={styles.speakerLineContainer} style={{ cursor: `${isTalkMoment || lastTalkingMoment? 'pointer':''}`}} onClick={()=> { if(isTalkMoment || lastTalkingMoment) this.props.setCurrentTime(this.props.startsObj[isTalkMoment?lineTime :isLastTalkingMoment])}}>
                 <div  className={styles.speakerContainer} >
-                  {isMinLine && <div className={styles.lineItem} style={{...lineStyle, backgroundColor: isTalkMoment? "#084cc9": "#ccc"}} title={`${isTalkMoment || lastTalkingMoment?secondsToTimecode(this.props.startsObj[lineTime]): null}`} />}
+                  {isMinLine && <div className={styles.lineItem} style={{...lineStyle, backgroundColor: isTalkMoment? "#084cc9": "#ccc"}}  />}
                 </div> 
               </div>
         );
