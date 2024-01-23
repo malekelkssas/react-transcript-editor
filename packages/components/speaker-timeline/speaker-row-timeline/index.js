@@ -40,14 +40,14 @@ class SpeakerRowTimeLine extends React.Component {
     };
      
     return (
-    <tr className={styles.tableRow}>
-      <td title={this.props.speaker} className={styles.tableSpeaker}>
+    <td className={styles.tableRow}>
+      <div title={this.props.speaker} className={styles.tableSpeaker}>
           {this.props.speaker.substring(0, 5)}
-      </td>
-      <td className={styles.lineContainer}>
+      </div>
+      <div className={styles.lineContainer}>
         <div className={styles.speakerLineRow}>{renderTimelineLines()}</div>
-      </td>
-    </tr>
+      </div>
+    </td>
     );
   }
 }

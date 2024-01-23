@@ -49,7 +49,7 @@ class SpeakerTimeLine extends React.Component {
 
   render() {
     return (
-    <div className={styles.speakerRowTimeLineContainer}>
+    <tr className={styles.speakerRowTimeLineContainer}>
       {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
       <SpeakerRowTimeLine
         key={`speaker_${speaker}_circular_timeline`}
@@ -60,7 +60,7 @@ class SpeakerTimeLine extends React.Component {
         />
         )
         )}
-    </div>
+    </tr>
     );
   }
 }

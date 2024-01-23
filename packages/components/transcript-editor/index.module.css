@@ -29,6 +29,7 @@
   overflow-x: auto;
   white-space: nowrap;
   margin-left: 1em;
+  max-height: 12em;
 }
 
 .videoTimelineTable::-webkit-scrollbar {
@@ -37,12 +38,8 @@
 }
 
 .videoTimelineBody{
-max-height: 12em;
-}
-
-.videoTimelineContainer {
   min-height: 20em;
-  }
+}
 
 video {
   margin-top: 1em;
