@@ -8,8 +8,6 @@ class SpeakerRowTimeLine extends React.Component {
   }
 
   render() {
-    console.log("in the small speaker");
-
     const renderTimelineLines = () => {
       const MINUTE_TO_SECONDS = 60;
       const MINUTE_SEGMENT = 10;
