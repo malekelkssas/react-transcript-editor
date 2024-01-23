@@ -10,9 +10,17 @@ class TimeLine extends React.Component {
     super(props);
 
   }
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    const MINUTE_SEGMENT = 10;
+    if (parseInt(this.props.currentTime) % MINUTE_SEGMENT === 0 || Math.abs(parseInt(nextProps.currentTime) - parseInt(this.props.currentTime)) > MINUTE_SEGMENT) {
+      return true;
+    }
+
+    return false;
+  };
  
   render() {
-
     const renderTimelineLines = () => {
       const MINUTE_TO_SECONDS = 60;
       const MINUTE_SEGMENT = 10;
@@ -48,7 +56,7 @@ class TimeLine extends React.Component {
     
         return lines;
       };
-     
+      
     return (
       <tr className={styles.tableRow} >
         <td className={styles.tableIcon}>

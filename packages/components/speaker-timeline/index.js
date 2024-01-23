@@ -11,6 +11,7 @@ class SpeakerTimeLine extends React.Component {
 
     this.state= {
       speakers: null,
+      hasLoadedData: false,
     }
 
   }
@@ -18,6 +19,10 @@ class SpeakerTimeLine extends React.Component {
   componentDidMount() {
     this.loadData();
   }
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    return nextProps !== this.props || nextState.hasLoadedData;
+  };
 
   loadData() {
     if(!this.state.speakers && this.props.transcriptData){
@@ -32,10 +37,9 @@ class SpeakerTimeLine extends React.Component {
         }
         if(!tmpSpeakers[block.data.speaker].hasOwnProperty(this.roundToNearest10(parseInt(block.data.start)))){
           const numberNearest10 = this.roundToNearest10(parseInt(block.data.start));
-          tmpSpeakers[block.data.speaker][numberNearest10] =parseInt(block.data.start)};
+          tmpSpeakers[block.data.speaker][numberNearest10] = parseInt(block.data.start)};
         })
-        console.log(tmpSpeakers);
-        this.setState({speakers: tmpSpeakers});
+        this.setState({speakers: tmpSpeakers, hasLoadedData: true});
       }
   }
 
@@ -45,7 +49,6 @@ class SpeakerTimeLine extends React.Component {
   };
 
   render() {
- 
     return (
     <div className={styles.speakerRowTimeLineContainer}>
       {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
