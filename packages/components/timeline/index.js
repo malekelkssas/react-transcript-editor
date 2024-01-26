@@ -4,53 +4,40 @@ import styles from './index.module.css';
 import { timecodeToSeconds } from '../../util/timecode-converter';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from '@fortawesome/free-solid-svg-icons';
+import TimeLineInstant from './timeline-instant/index.js';
 
 class TimeLine extends React.Component {
   constructor(props) {
     super(props);
 
+    this.MINUTE_TO_SECONDS = 60;
+    this.MINUTE_SEGMENT = 10;
+    this.videoRef = this.props.videoRef;
   }
-
-  shouldComponentUpdate = (nextProps, nextState) => {
-    const MINUTE_SEGMENT = 10;
-    if (parseInt(this.props.currentTime) % MINUTE_SEGMENT === 0 || Math.abs(parseInt(nextProps.currentTime) - parseInt(this.props.currentTime)) > MINUTE_SEGMENT) {
-      return true;
-    }
-
-    return false;
-  };
  
   render() {
     const renderTimelineLines = () => {
-      const MINUTE_TO_SECONDS = 60;
-      const MINUTE_SEGMENT = 10;
       const totalLines = timecodeToSeconds(this.props.mediaDuration);
       const lines = [];
       for (let lineTime = 0;
          lineTime <= totalLines;
           lineTime++) {
 
-        const isActive = lineTime <= this.props.currentTime;
-        const minuteNumber = lineTime / MINUTE_TO_SECONDS;
-
-        const lineClassName = `${styles.timeLineLine} ${isActive ? styles.timeLineLineActive : ''}`;
-        const numberClassName = `${styles.timeLineNumber} ${isActive ? styles.timeLineNumberActive : ''}`;
+        const minuteNumber = lineTime / this.MINUTE_TO_SECONDS;
+        const isMajorLine = (lineTime % this.MINUTE_TO_SECONDS) === 0;
+        const isMinLine = (lineTime % this.MINUTE_SEGMENT) === 0;
         
-        const isMajorLine = (lineTime % MINUTE_TO_SECONDS) === 0;
-        const isMinLine = (lineTime % MINUTE_SEGMENT) === 0;
-        const lineStyle = {
-          height: isMajorLine ? '10px' : '5px', 
-        };
         
         lines.push(
-        <div className={styles.lineNumberContainer} key={`time-line-number-${lineTime}`} onClick={()=>this.props.setCurrentTime(lineTime)}>
-          <div className={styles.lineContainer} >
-            {isMinLine && <div className={lineClassName} style={lineStyle}/>}
-          </div> 
-          <div className={styles.numberContainer}>
-            {isMajorLine && <div className={numberClassName} >{minuteNumber}</div>}
-          </div> 
-        </div>
+          <TimeLineInstant
+          key={`time-line-number-${lineTime}`}
+          timeLineInstant={lineTime}
+          isMinLine={isMinLine}
+          isMajorLine={isMajorLine}
+          setCurrentTime={this.props.setCurrentTime}
+          videoRef={this.props.videoRef}
+          minuteNumber={minuteNumber}
+          />
           );
         }
     
@@ -71,7 +58,6 @@ class TimeLine extends React.Component {
 }
 
 TimeLine.propTypes = {
-  currentTime: PropTypes.number,
   handleAnalyticsEvents: PropTypes.func,
   videoRef: PropTypes.object.isRequired,
   mediaDuration: PropTypes.string,

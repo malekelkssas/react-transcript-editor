@@ -475,7 +475,6 @@ class TranscriptEditor extends React.Component {
     );
 
     const timeline = (<TimeLine
-      currentTime={this.state.currentTime}
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
       videoRef={this.videoRef}
       mediaDuration={this.state.mediaDuration}
