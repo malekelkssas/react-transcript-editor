@@ -4,6 +4,7 @@
   height: 3em;
   max-height: 2em;
   border-bottom: 1px solid #ccc;
+  width: 100%;
 }
 
 .tableSpeaker {
@@ -34,7 +35,7 @@
 }
 
 .speakerLineRow {
-  display: flex;
+  display: block;
   flex-direction: row;
   position: relative;
 }

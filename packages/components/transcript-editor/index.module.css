@@ -39,6 +39,7 @@
 
 .videoTimelineBody{
   min-height: 20em;
+  padding-right: 1em;
 }
 
 video {

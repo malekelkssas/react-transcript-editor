@@ -1,51 +1,46 @@
 import React from 'react';
 import styles from './index.module.css';
-import { secondsToTimecode, timecodeToSeconds } from '../../../util/timecode-converter/index.js';
+import { timecodeToSeconds } from '../../../util/timecode-converter/index.js';
+import ResizableRectangle from '../resizable-rectangle/index.js';
 
 class SpeakerRowTimeLine extends React.Component {
   constructor(props) {
     super(props);
+    this.rectangles = this.props.rectangles;
+    this.mediaDuration = timecodeToSeconds(this.props.mediaDuration);
+  }
+
+  checkCollision(index, newStart, newEnd) {
+    const prevRectangle = this.rectangles[index - 1];
+    const nextRectangle = this.rectangles[index + 1];
+    return (prevRectangle && prevRectangle.end > newStart) || (nextRectangle && nextRectangle.start < newEnd);
+  }
+
+  updateRectangle(index, newStart, newEnd) {
+    this.rectangles[index] = { start: newStart, end: newEnd };
   }
 
   render() {
-    const renderTimelineLines = () => {
-      const MINUTE_TO_SECONDS = 60;
-      const MINUTE_SEGMENT = 10;
-      const lines = [];
-      const totalLines = timecodeToSeconds(this.props.mediaDuration);
-  
-      for (let lineTime = 0; lineTime < totalLines; lineTime++) {
-        const isTalkMoment = this.props.startsObj.hasOwnProperty(lineTime);
-        
-        const isMajorLine = (lineTime % MINUTE_TO_SECONDS) === 0;
-        const isMinLine = (lineTime % MINUTE_SEGMENT) === 0;
-        const lastTalkingMoment = this.props.startsObj.hasOwnProperty(lineTime - (lineTime % MINUTE_SEGMENT));
-        const isLastTalkingMoment = lastTalkingMoment ? lineTime - (lineTime % MINUTE_SEGMENT) : 0;
-        
-
-        const lineStyle = {
-          height: isMajorLine ? '10px' : '5px', 
-        };
-
-        lines.push(
-              <div key={`speaker-${this.props.speaker}-line-${lineTime}`} title={isTalkMoment || lastTalkingMoment?secondsToTimecode(this.props.startsObj[isTalkMoment?lineTime :isLastTalkingMoment]): undefined} className={styles.speakerLineContainer} style={{ cursor: `${isTalkMoment || lastTalkingMoment? 'pointer':''}`}} onClick={()=> { if(isTalkMoment || lastTalkingMoment) this.props.setCurrentTime(this.props.startsObj[isTalkMoment?lineTime :isLastTalkingMoment])}}>
-                <div  className={styles.speakerContainer} >
-                  {isMinLine && <div className={styles.lineItem} style={{...lineStyle, backgroundColor: isTalkMoment? "#084cc9": "#ccc"}}  />}
-                </div> 
-              </div>
-        );
-      }
-  
-      return lines;
-    };
-     
     return (
     <td className={styles.tableRow}>
-      <div title={this.props.speaker} className={styles.tableSpeaker}>
+        <div title={this.props.speaker} className={styles.tableSpeaker}>
           {this.props.speaker.substring(0, 5)}
-      </div>
+        </div>
       <div className={styles.lineContainer}>
-        <div className={styles.speakerLineRow}>{renderTimelineLines()}</div>
+        {this.rectangles.map((rectangle, index) => (
+          <div className={styles.speakerLineRow}>
+          <ResizableRectangle
+            key={`speaker-${this.props.speaker}-rectangle-${index}`}
+            startTime={rectangle.start}
+            endTime={rectangle.end}
+            text={rectangle.text}
+            checkCollision={this.checkCollision.bind(this)}
+            updateRectangle={this.updateRectangle.bind(this)}
+            index={index}
+            mediaDuration={this.mediaDuration}
+          />
+          </div>
+        ))}
       </div>
     </td>
     );

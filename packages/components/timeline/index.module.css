@@ -58,6 +58,7 @@
   cursor: pointer;
   margin-left: 0.5px;
   padding-right: 0.5px;
+  max-width: 1px;
   max-height: 20px;
 }
 

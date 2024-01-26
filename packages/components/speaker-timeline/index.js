@@ -12,7 +12,6 @@ class SpeakerTimeLine extends React.Component {
 
     this.state= {
       speakers: null,
-      hasLoadedData: false,
     }
 
   }
@@ -34,32 +33,33 @@ class SpeakerTimeLine extends React.Component {
       blocks.map((block) => {
         if(!tmpSpeakers.hasOwnProperty(block.data.speaker)){
           tmpSpeakers[block.data.speaker] = {};
+          tmpSpeakers[block.data.speaker].rectangles = [];
         }
-        if(!tmpSpeakers[block.data.speaker].hasOwnProperty(this.roundToNearest10(parseInt(block.data.start)))){
-          const numberNearest10 = this.roundToNearest10(parseInt(block.data.start));
-          tmpSpeakers[block.data.speaker][numberNearest10] = parseInt(block.data.start)};
-        })
-        this.setState({speakers: tmpSpeakers, hasLoadedData: true});
-  }
-
-  
-  roundToNearest10 = (number) => {
-    return Math.floor(number / 10) * 10;
-  };
+        const start = block.data.start;
+        const end = block.data.words[block.data.words.length - 1].end;
+        tmpSpeakers[block.data.speaker].rectangles.push({ start, end, text: block.text });
+        });
+        Object.keys(tmpSpeakers).map((speaker) =>{
+          tmpSpeakers[speaker].rectangles.sort((a,b) => a.start - b.start);
+        });
+      this.setState({speakers: tmpSpeakers});
+    }
 
   render() {
     return (
-    <tr className={styles.speakerRowTimeLineContainer}>
+    <tr>
+      <div className={styles.speakerRowTimeLineContainer}>
       {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
       <SpeakerRowTimeLine
         key={`speaker_${speaker}_circular_timeline`}
         mediaDuration={this.props.mediaDuration}
         speaker={speaker}
-        startsObj={this.state.speakers[speaker]}
+        rectangles={this.state.speakers[speaker].rectangles}
         setCurrentTime={this.props.setCurrentTime}
         />
         )
         )}
+        </div>
     </tr>
     );
   }
