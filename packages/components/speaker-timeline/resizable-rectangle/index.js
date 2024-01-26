@@ -5,15 +5,25 @@ class DraggableResizableRectangle extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      position: { x: this.mapFromTimeToPosition(this.props.startTime) },
-      size: { width: Math.max(this.mapFromTimeToPosition(this.props.endTime) - this.mapFromTimeToPosition(this.props.startTime), 0.99)},
-      isDragging: false,
-      isResizing: false,
-    };
     this.initialMouseX = null;
     this.initialPosition = null;
     this.initialSize = null;
+    this.MINUTE_WIDTH = 65;
+    this.MINUTE_TO_SECOND = 60;
+    this.MIN_RECTANGLE_WIDTH = 0.99;
+    this.X_OFFSET = 2;
+    this.ACTIONS = {
+      DRAG: 'drag',
+      RESIZE: 'resize',
+    }
+    this.DRAG_SPEED = 1;
+    this.RESIZE_SPEED = 1;
+    this.state = {
+      position: { x: this.mapFromTimeToPosition(this.props.startTime) },
+      size: { width: Math.max(this.mapFromTimeToPosition(this.props.endTime) - this.mapFromTimeToPosition(this.props.startTime), this.MIN_RECTANGLE_WIDTH)},
+      isDragging: false,
+      isResizing: false,
+    };
   }
 
   getRectangleBoundryPosition = (x, width) => {
@@ -33,9 +43,9 @@ class DraggableResizableRectangle extends Component {
   handleMouseDown = (event, type) => {
     event.preventDefault();
 
-    if (type === 'drag') {
+    if (type === this.ACTIONS.DRAG) {
       this.setState({ isDragging: true });
-    } else if (type === 'resize') {
+    } else if (type === this.ACTIONS.RESIZE) {
       this.setState({ isResizing: true });
     }
 
@@ -48,12 +58,11 @@ class DraggableResizableRectangle extends Component {
   };
 
   mapFromTimeToPosition(time){
-    console.log("time", time,"duration", this.props.mediaDuration,"calu", Math.floor(this.props.mediaDuration / 60) * 5);
-    return ((time / 60) * 65) + 2
+    return ((time / this.MINUTE_TO_SECOND) * this.MINUTE_WIDTH) + this.X_OFFSET
   }
 
   mapFromPositionToTime(position){
-    return ((position - 2) / 65) * 60;
+    return ((position - this.X_OFFSET) / this.MINUTE_WIDTH) * this.MINUTE_TO_SECOND;
   }
 
   handleMouseMove = (event) => {
@@ -62,7 +71,7 @@ class DraggableResizableRectangle extends Component {
 
     if (isDragging) {
       const movementX = clientX - this.initialMouseX;
-      const newXPosition = this.initialPosition + movementX;
+      const newXPosition = this.initialPosition + movementX * this.DRAG_SPEED;
       const {startX, endX} = this.getRectangleBoundryPosition(newXPosition, this.initialSize);
       const startTime = this.mapFromPositionToTime(startX);
       const endTime = this.mapFromPositionToTime(endX);
@@ -76,7 +85,7 @@ class DraggableResizableRectangle extends Component {
       }
     } else if (isResizing) {
       const movementX = clientX - this.initialMouseX;
-      const newSize = Math.max(this.initialSize + movementX, 0.99);
+      const newSize = Math.max(this.initialSize + movementX * this.RESIZE_SPEED, this.MIN_RECTANGLE_WIDTH);
       const {startX, endX} = this.getRectangleBoundryPosition(this.initialPosition, newSize);
       const startTime = this.mapFromPositionToTime(startX);
       const endTime = this.mapFromPositionToTime(endX);
@@ -108,42 +117,28 @@ class DraggableResizableRectangle extends Component {
 
   render() {
     const { position, size, isResizing } = this.state;
-
+    
     return (
       <div
         style={{
-          position: 'absolute',
           left: position.x,
-          top: 0,
           width: size.width,
-          height: "1em",
-          minWidth:'1px',
           cursor: isResizing ? 'ew-resize' : 'move',
         }}
+        className={style.rectangleContainer}
         title={this.props.text}
       >
         <div
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            cursor: 'move',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            userSelect: 'none',
-            overflow: 'hidden',
-          }}
-          onMouseDown={(e) => this.handleMouseDown(e, 'drag')}
+        className={style.dragContainer}
+          onMouseDown={(e) => this.handleMouseDown(e, this.ACTIONS.DRAG)}
         >
-          <span style={{ fontSize: "10px" ,overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span className={style.dragContainerText}>
             {this.props.text}
           </span>
         </div>
         <div
           className={style.resizer}
-          onMouseDown={(e) => this.handleMouseDown(e, 'resize')}
+          onMouseDown={(e) => this.handleMouseDown(e, this.ACTIONS.RESIZE)}
         />
       </div>
     );

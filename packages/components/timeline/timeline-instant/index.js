@@ -14,7 +14,7 @@ class TimeLineInstant extends React.Component {
         this.minuteNumber = this.props.minuteNumber;
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         if (( this.props.videoRef.current.currentTime >= this.timeLineInstant && !this.state.isActive) || ( this.props.videoRef.current.currentTime < this.timeLineInstant && this.state.isActive) && (this.isMajorLine || this.isMinLine)) {
           this.setState({isActive: !this.state.isActive});
         }
@@ -23,13 +23,10 @@ class TimeLineInstant extends React.Component {
 
     render() {
         const { isActive } = this.state;
-        const lineStyle = {
-            height: this.isMajorLine ? '10px' : '5px', 
-          };
         return (
         <div className={styles.lineNumberContainer} onClick={()=>this.props.setCurrentTime(this.timeLineInstant)}>
             <div className={styles.lineContainer} >
-                {this.isMinLine && <div className={styles.timeLineLine} style={{...lineStyle, backgroundColor: isActive?"#084cc9":""}}/>}
+                {this.isMinLine && <div className={styles.timeLineLine} style={{height: this.isMajorLine ? '10px' : '5px', backgroundColor: isActive?"#084cc9":""}}/>}
             </div> 
             <div className={styles.numberContainer}>
                 {this.isMajorLine && <div className={styles.timeLineNumber} >{this.minuteNumber}</div>}

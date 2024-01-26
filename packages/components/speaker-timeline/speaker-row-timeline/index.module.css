@@ -3,7 +3,6 @@
   position: relative;
   height: 3em;
   max-height: 2em;
-  border-bottom: 1px solid #ccc;
   width: 100%;
 }
 
@@ -26,6 +25,7 @@
   display: flex;
   flex-direction: row;
   align-items: start;
+  border-bottom: 1px solid #ccc;
 }
 
 .lineItem {

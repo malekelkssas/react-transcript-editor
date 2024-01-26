@@ -1,9 +1,7 @@
 import React from 'react';
-import styles from './index.module.css'
 import PropTypes from 'prop-types';
 import SpeakerRowTimeLine from './speaker-row-timeline';
 import sttJsonAdapter from '../../stt-adapters';
-import { timecodeToSeconds } from '../../util/timecode-converter';
 
 
 class SpeakerTimeLine extends React.Component {
@@ -13,16 +11,11 @@ class SpeakerTimeLine extends React.Component {
     this.state= {
       speakers: null,
     }
-
   }
 
   componentDidMount() {
     this.loadData();
   }
-
-  shouldComponentUpdate = (nextProps, nextState) => {
-    return timecodeToSeconds(nextProps.mediaDuration) !== timecodeToSeconds(this.props.mediaDuration) || nextProps.transcriptData != this.props.transcriptData;
-  };
 
   loadData() {
       const { blocks } = sttJsonAdapter(
@@ -48,7 +41,6 @@ class SpeakerTimeLine extends React.Component {
   render() {
     return (
     <tr>
-      <div className={styles.speakerRowTimeLineContainer}>
       {this.state.speakers && Object.keys(this.state.speakers).map((speaker) => (
       <SpeakerRowTimeLine
         key={`speaker_${speaker}_circular_timeline`}
@@ -59,7 +51,6 @@ class SpeakerTimeLine extends React.Component {
         />
         )
         )}
-        </div>
     </tr>
     );
   }
