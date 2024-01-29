@@ -18,6 +18,8 @@ class DraggableResizableRectangle extends Component {
     }
     this.DRAG_SPEED = 1;
     this.RESIZE_SPEED = 1;
+    this.updateTimeout = false;
+    this.timeoutId = null;
     this.state = {
       position: { x: this.mapFromTimeToPosition(this.props.startTime) },
       size: { width: Math.max(this.mapFromTimeToPosition(this.props.endTime) - this.mapFromTimeToPosition(this.props.startTime), this.MIN_RECTANGLE_WIDTH)},
@@ -40,6 +42,20 @@ class DraggableResizableRectangle extends Component {
     document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.position.x !== this.state.position.x || prevState.size.width !== this.state.size.width) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = setTimeout(() => {
+      const {startX: newStart, endX: newEnd} = this.getRectangleBoundryPosition(this.state.position.x, this.state.size.width)
+      this.props.updateStartAndEndTimes(
+      this.props.blockIndex,
+      this.mapFromPositionToTime(newStart),
+      this.mapFromPositionToTime(newEnd)
+    );
+      }, 3000);
+    }
+  }
+
   handleMouseDown = (event, type) => {
     event.preventDefault();
 
@@ -58,18 +74,18 @@ class DraggableResizableRectangle extends Component {
   };
 
   mapFromTimeToPosition(time){
-    return ((time / this.MINUTE_TO_SECOND) * this.MINUTE_WIDTH) + this.X_OFFSET
+    return Math.max(((time / this.MINUTE_TO_SECOND) * this.MINUTE_WIDTH) + this.X_OFFSET, 2);
   }
 
   mapFromPositionToTime(position){
-    return ((position - this.X_OFFSET) / this.MINUTE_WIDTH) * this.MINUTE_TO_SECOND;
+    return Math.max(((position - this.X_OFFSET) / this.MINUTE_WIDTH) * this.MINUTE_TO_SECOND, 0);
   }
 
   handleMouseMove = (event) => {
     const { isDragging, isResizing } = this.state;
     const { clientX } = event;
 
-    if (isDragging) {
+    if (isDragging) { 
       const movementX = clientX - this.initialMouseX;
       const newXPosition = this.initialPosition + movementX * this.DRAG_SPEED;
       const {startX, endX} = this.getRectangleBoundryPosition(newXPosition, this.initialSize);
@@ -105,7 +121,6 @@ class DraggableResizableRectangle extends Component {
       isDragging: false,
       isResizing: false,
     });
-
 
     this.initialMouseX = null;
     this.initialPosition = null;

@@ -43,6 +43,13 @@ class CustomEditor extends React.Component {
     return false;
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.editorState !== this.props.editorState) {
+      return true;
+    }
+    return false;
+  }
+
   handleOnChange = e => {
     this.props.onChange(e);
   };

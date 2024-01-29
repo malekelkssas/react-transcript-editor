@@ -7,7 +7,7 @@ import {
   convertFromRaw,
   convertToRaw,
   getDefaultKeyBinding,
-  Modifier
+  Modifier,
 } from "draft-js";
 
 
@@ -26,6 +26,7 @@ class TimedTextEditor extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty()
     };
+    this.changeBlocks= false;
   }
 
   componentDidMount() {
@@ -45,8 +46,14 @@ class TimedTextEditor extends React.Component {
       prevProps.timecodeOffset !== this.props.timecodeOffset ||
       prevProps.showSpeakers !== this.props.showSpeakers ||
       prevProps.showTimecodes !== this.props.showTimecodes ||
-      prevProps.isEditable !== this.props.isEditable
+      prevProps.isEditable !== this.props.isEditable ||
+      prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks
     ) {
+      if(prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks){
+        this.changeBlocks = true;
+        this.AllahKareem();
+        return true;
+      }
       // forcing a re-render is an expensive operation and
       // there might be a way of optimising this at a later refactor (?)
       // the issue is that WrapperBlock is not update on TimedTextEditor
@@ -54,7 +61,8 @@ class TimedTextEditor extends React.Component {
       // for now compromising on this, as setting timecode offset, and
       // display preferences for speakers and timecodes are not expected to
       // be very frequent operations but rather one time setup in most cases.
-      this.forceRenderDecorator();
+      else if(!this.changeBlocks)
+        this.forceRenderDecorator();
     }
   }
 
@@ -160,6 +168,19 @@ class TimedTextEditor extends React.Component {
       this.setState({ editorState: newEditorState });
       return newEditorState;
     }
+  }
+
+  AllahKareem() {
+    const blocks = this.props.contentTimeChangeBlocks
+    console.log("AllahKareem ", blocks);
+    this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () => {
+      this.setEditorContentState(blocks);
+    });
+      
+        this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () =>{
+          this.updateTimestampsForEditorState();
+        });
+        this.changeBlocks = false;
   }
 
   loadData() {

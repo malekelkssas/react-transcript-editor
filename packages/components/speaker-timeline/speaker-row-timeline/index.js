@@ -20,6 +20,10 @@ class SpeakerRowTimeLine extends React.Component {
     this.rectangles[index] = { start: newStart, end: newEnd };
   }
 
+  updateStartAndEndTimes = (blockIndex, newStartTime, newEndTime) => {
+    this.props.updateStartAndEndTimes(blockIndex, newStartTime, newEndTime);
+  }
+
   render() {
     return (
     <td className={styles.tableRow}>
@@ -33,11 +37,13 @@ class SpeakerRowTimeLine extends React.Component {
             key={`speaker-${this.props.speaker}-rectangle-${index}`}
             startTime={rectangle.start}
             endTime={rectangle.end}
+            blockIndex={rectangle.key}
             text={rectangle.text}
             checkCollision={this.checkCollision.bind(this)}
             updateRectangle={this.updateRectangle.bind(this)}
             index={index}
             mediaDuration={this.mediaDuration}
+            updateStartAndEndTimes={this.updateStartAndEndTimes}
           />
           </div>
         ))}

@@ -42,6 +42,8 @@ class TranscriptEditor extends React.Component {
     this.state = {
       currentTime: 0,
       transcriptData: null,
+      triggerContentTimeChangeBlocks: false,
+      contentTimeChangeBlocks: [],
       isScrollIntoViewOn: false,
       showSettings: false,
       showShortcuts: false,
@@ -81,6 +83,17 @@ class TranscriptEditor extends React.Component {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
   };
+
+  handleChangeContentTimeChangeBlocks = (dataBlocks) => {
+    this.setState({ contentTimeChangeBlocks: dataBlocks },()=>{
+      this.handleTriggerUpdate();
+    });
+  };
+
+  handleTriggerUpdate = () => {
+    this.setState({ triggerContentTimeChangeBlocks: !this.state.triggerContentTimeChangeBlocks },()=>{
+    });
+  }
 
   updateDimensions = () => {
     let gridDisplay = {
@@ -436,6 +449,8 @@ class TranscriptEditor extends React.Component {
       <TimedTextEditor
         fileName={this.props.fileName}
         transcriptData={this.state.transcriptData}
+        triggerContentTimeChangeBlocks={this.state.triggerContentTimeChangeBlocks}
+        contentTimeChangeBlocks={this.state.contentTimeChangeBlocks}
         timecodeOffset={this.state.timecodeOffset}
         onWordClick={this.handleWordClick}
         playMedia={this.handlePlayMedia}
@@ -483,11 +498,17 @@ class TranscriptEditor extends React.Component {
 
     const speakertimeline = (<SpeakerTimeLine
       transcriptData={this.state.transcriptData}
+      handleChangeContentTimeChangeBlocks={this.handleChangeContentTimeChangeBlocks}
       handleAnalyticsEvents={this.props.handleAnalyticsEvents}
       videoRef={this.videoRef}
       mediaDuration={this.state.mediaDuration}
       sttJsonType={this.props.sttJsonType}
       setCurrentTime={this.setCurrentTime}
+      handleAutoSaveChanges={this.handleAutoSaveChanges}
+      autoSaveContentType={contentFormat}
+      getEditorContent={this.getEditorContent}
+      timedTextEditorRef={this.timedTextEditorRef}
+      title={this.props.title ? this.props.title : Date.now()}
     />);
 
     return (
