@@ -85,9 +85,7 @@ class TranscriptEditor extends React.Component {
   };
 
   handleChangeContentTimeChangeBlocks = (dataBlocks) => {
-    this.setState({ contentTimeChangeBlocks: dataBlocks },()=>{
       this.handleTriggerUpdate();
-    });
   };
 
   handleTriggerUpdate = () => {

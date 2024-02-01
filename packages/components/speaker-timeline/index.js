@@ -37,39 +37,22 @@ class SpeakerTimeLine extends React.Component {
     const wordNewStart = newSentenceStart + relativePosition * (newSentenceEnd - newSentenceStart);
     const wordNewEnd = wordNewStart + (wordOldEnd - wordOldStart);
 
-    return { start:this.roundToDecimalPlaces(wordNewStart, 2), end: this.roundToDecimalPlaces(wordNewEnd, 2) };
+    return { start:wordNewStart, end: wordNewEnd };
 }
 
 
 
 updateStartAndEndTimes = (blockidx, newStartTime, newEndTime) => {
-  const data = sttJsonAdapter(
-    this.props.transcriptData,
-    this.props.sttJsonType
-  );
-  // const { data } = this.props.getEditorContent(this.props.autoSaveContentType);
-  const { blocks, entityMap } = convertToRaw(convertFromRaw(data));
-  const oldSentenceStart = blocks[blockidx].data.start;
-  const oldSentenceEnd = blocks[blockidx].data.words[blocks[blockidx].data.words.length - 1].end;
-  
-  blocks[blockidx].data.start = newStartTime;
-  blocks[blockidx].data.words.map((word, idx) => {
-    const {start, end} = this.mapWordTimesToNewSentence(oldSentenceStart, oldSentenceEnd, newStartTime, newEndTime, word.start, word.end);
-    const entityMapidx = word.index;
-    word.start = blocks[blockidx].data.words[idx - 1]? blocks[blockidx].data.words[idx - 1].end : start;
-    word.end = end;
-    entityMap[entityMapidx].data.start = word.start;
-    entityMap[entityMapidx].data.end = word.end;
-    return word;
-  });
-
-  data.blocks = blocks;
-  data.entityMap = entityMap;
-  this.props.handleChangeContentTimeChangeBlocks(data);
+  console.log("updateStartAndEndTimes", blockidx, newStartTime, newEndTime);
+  const ke = convertToRaw(this.props.timedTextEditorRef.current.state.editorState.getCurrentContent()).blocks[blockidx].key;
+  console.log(this.props.timedTextEditorRef.current);
+  const contentToUpdateWithSpekaerSentenceStartTime = this.props.timedTextEditorRef.current.updateSpeakerSentenceStartTime(ke, newStartTime);
+  this.props.timedTextEditorRef.current.setEditorNewTimeStateUpdate(contentToUpdateWithSpekaerSentenceStartTime);
 }
 
   loadData(initData) {
       const { blocks } = convertToRaw(convertFromRaw(initData));
+      // console.log("blocks", blocks);
       const tmpSpeakers = {};
       blocks.map((block, idx) => {
         if(!tmpSpeakers.hasOwnProperty(block.data.speaker)){

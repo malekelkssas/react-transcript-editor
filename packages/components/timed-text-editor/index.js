@@ -24,7 +24,8 @@ class TimedTextEditor extends React.Component {
     super(props);
 
     this.state = {
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
+      trig: false
     };
     this.changeBlocks= false;
   }
@@ -49,11 +50,6 @@ class TimedTextEditor extends React.Component {
       prevProps.isEditable !== this.props.isEditable ||
       prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks
     ) {
-      if(prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks){
-        this.changeBlocks = true;
-        this.AllahKareem();
-        return true;
-      }
       // forcing a re-render is an expensive operation and
       // there might be a way of optimising this at a later refactor (?)
       // the issue is that WrapperBlock is not update on TimedTextEditor
@@ -61,7 +57,6 @@ class TimedTextEditor extends React.Component {
       // for now compromising on this, as setting timecode offset, and
       // display preferences for speakers and timecodes are not expected to
       // be very frequent operations but rather one time setup in most cases.
-      else if(!this.changeBlocks)
         this.forceRenderDecorator();
     }
   }
@@ -170,18 +165,28 @@ class TimedTextEditor extends React.Component {
     }
   }
 
-  AllahKareem() {
-    const blocks = this.props.contentTimeChangeBlocks
-    console.log("AllahKareem ", blocks);
-    this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () => {
-      this.setEditorContentState(blocks);
-    });
-      
-        this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () =>{
-          this.updateTimestampsForEditorState();
-        });
-        this.changeBlocks = false;
-  }
+  // AllahKareem() {
+  //   const blocks = this.props.contentTimeChangeBlocks
+  //   this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () =>{
+  //     // // console.log("AllahKareem originalState", this.state.originalState);
+  //     // const newEditorState = EditorState.push(
+  //     //   this.state.editorState,
+  //     //   this.state.originalState
+  //     // );
+  //     const newContentState = convertFromRaw(blocks);
+  //   const decorator = this.state.editorState.getDecorator();
+  //   const newState = EditorState.createWithContent(newContentState, decorator);
+  //   const newEditorState = EditorState.push(
+  //     newState,
+  //     newContentState
+  //   );
+  //   this.setState({ editorState: newEditorState }, () =>{
+  //     console.log("AllahKareem", convertToRaw(this.state.editorState.getCurrentContent()));
+  //     // this.forceRenderDecorator();
+  //     this.changeBlocks = false;
+  //   });
+  //     });
+  // }
 
   loadData() {
     if (this.props.transcriptData !== null) {
@@ -304,6 +309,38 @@ class TimedTextEditor extends React.Component {
         );
 
         this.props.handleAutoSaveChanges(data);
+
+        this.forceRenderDecorator();
+      }
+    );
+  };
+
+
+  updateSpeakerSentenceStartTime = (key, newStartTime) => {
+    const ContentState = this.state.editorState.getCurrentContent();
+    const contentToUpdate = convertToRaw(ContentState);
+    contentToUpdate.blocks.forEach(block => {
+      if (block.key === key) {
+        block.data.start = newStartTime;
+        block.data.words[0].start = newStartTime;
+        contentToUpdate.entityMap[block.data.words[0].index].data.start = newStartTime;
+      }
+    })
+  
+    return convertFromRaw(contentToUpdate);
+  }
+  
+  setEditorNewTimeStateUpdate = newContentState => {
+    
+    const neworig = convertToRaw(newContentState);
+    console.log({neworig});
+
+    this.setState(
+      () => ({
+        originalState: neworig
+      }),
+      () => {
+          this.updateTimestampsForEditorState();
       }
     );
   };
@@ -581,6 +618,7 @@ class TimedTextEditor extends React.Component {
           onWordClick={this.onWordClick}
           handleAnalyticsEvents={this.props.handleAnalyticsEvents}
           isEditable={this.props.isEditable}
+          triggerContentTimeChangeBlocks={this.state.trig}
         />
       </section>
     );

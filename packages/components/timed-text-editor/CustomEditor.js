@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Editor } from "draft-js";
+import { Editor, convertToRaw } from "draft-js";
 
   
 import WrapperBlock from './WrapperBlock';
@@ -25,14 +25,17 @@ class CustomEditor extends React.Component {
         setEditorNewContentStateSpeakersUpdate: this.props.setEditorNewContentStateSpeakersUpdate,
         onWordClick: this.handleWordClick,
         handleAnalyticsEvents: this.props.handleAnalyticsEvents,
-        isEditable: this.props.isEditable
+        isEditable: this.props.isEditable,
+        triggerContentTimeChangeBlocks: this.props.triggerContentTimeChangeBlocks,
       }
     };
   };
 
   shouldComponentUpdate(nextProps) {
     // https://stackoverflow.com/questions/39182657/best-performance-method-to-check-if-contentstate-changed-in-draftjs-or-just-edi
-    if (nextProps.editorState !== this.props.editorState) {
+    if (nextProps.editorState !== this.props.editorState
+      || nextProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks) {
+        // console.log("here");
       return true;
     }
 
@@ -43,12 +46,13 @@ class CustomEditor extends React.Component {
     return false;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.editorState !== this.props.editorState) {
-      return true;
-    }
-    return false;
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.editorState !== this.props.editorState
+  //     || prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   handleOnChange = e => {
     this.props.onChange(e);

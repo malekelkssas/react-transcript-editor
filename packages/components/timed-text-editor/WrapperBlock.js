@@ -55,6 +55,12 @@ class WrapperBlock extends React.Component {
   }
   // reducing unnecessary re-renders
   shouldComponentUpdate = (nextProps, nextState) => {
+
+    if(nextProps.blockProps.triggerContentTimeChangeBlocks !== this.props.blockProps.triggerContentTimeChangeBlocks){
+      console.log('shouldComponentUpdate wrapper triggerContentTimeChangeBlocks', nextProps.blockProps.triggerContentTimeChangeBlocks , this.props.blockProps.triggerContentTimeChangeBlocks )
+      console.log('componentDidUpdate wrapper time ', nextProps.block.getData().get('start') , this.props.blockProps.triggerContentTimeChangeBlocks);
+      }
+
     if (nextProps.block.getText() !== this.props.block.getText()) {
       return true;
     }
@@ -88,7 +94,20 @@ class WrapperBlock extends React.Component {
 
   componentDidUpdate  = (prevProps, prevState) =>{
 
-    if(prevProps.block.getData().get('speaker') !== prevState.speaker){
+    if (this.props.block.getData().get('start') !== prevProps.block.getData().get('start')) {
+      const newStart = this.props.block.getData().get('start');
+      
+      // Update the state with the new 'start' value
+      this.setState({ start: newStart });
+  
+      // Additional logic or side effects can be added here if needed
+  
+      // Log the change for debugging
+      console.log('Updated start state:', newStart);
+    }
+    
+    if(prevProps.block.getData().get('speaker') !== prevState.speaker ||
+      this.props.blockProps.triggerContentTimeChangeBlocks !== prevProps.blockProps.triggerContentTimeChangeBlocks){
         console.log('componentDidUpdate wrapper speaker', prevProps.block.getData().get('speaker') , prevState.speaker );
         
         this.setState({

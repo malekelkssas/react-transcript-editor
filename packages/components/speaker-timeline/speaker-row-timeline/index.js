@@ -20,8 +20,8 @@ class SpeakerRowTimeLine extends React.Component {
     this.rectangles[index] = { start: newStart, end: newEnd };
   }
 
-  updateStartAndEndTimes = (blockIndex, newStartTime, newEndTime) => {
-    this.props.updateStartAndEndTimes(blockIndex, newStartTime, newEndTime);
+  updateStartAndEndTimes = (blockKey, newStartTime, newEndTime) => {
+    this.props.updateStartAndEndTimes(blockKey, newStartTime, newEndTime);
   }
 
   render() {
@@ -32,12 +32,11 @@ class SpeakerRowTimeLine extends React.Component {
         </div>
       <div className={styles.lineContainer}>
         {this.rectangles.map((rectangle, index) => (
-          <div className={styles.speakerLineRow}>
+          <div className={styles.speakerLineRow} key={`speaker-${this.props.speaker}-rectangle-${index}`}>
           <ResizableRectangle
-            key={`speaker-${this.props.speaker}-rectangle-${index}`}
             startTime={rectangle.start}
             endTime={rectangle.end}
-            blockIndex={rectangle.key}
+            blockKey={rectangle.key}
             text={rectangle.text}
             checkCollision={this.checkCollision.bind(this)}
             updateRectangle={this.updateRectangle.bind(this)}

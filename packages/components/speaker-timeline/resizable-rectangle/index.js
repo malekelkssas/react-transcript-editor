@@ -11,7 +11,7 @@ class DraggableResizableRectangle extends Component {
     this.MINUTE_WIDTH = 65;
     this.MINUTE_TO_SECOND = 60;
     this.MIN_RECTANGLE_WIDTH = 0.99;
-    this.X_OFFSET = 2;
+    this.X_OFFSET = 3;
     this.ACTIONS = {
       DRAG: 'drag',
       RESIZE: 'resize',
@@ -48,11 +48,11 @@ class DraggableResizableRectangle extends Component {
       this.timeoutId = setTimeout(() => {
       const {startX: newStart, endX: newEnd} = this.getRectangleBoundryPosition(this.state.position.x, this.state.size.width)
       this.props.updateStartAndEndTimes(
-      this.props.blockIndex,
+      this.props.blockKey,
       this.mapFromPositionToTime(newStart),
       this.mapFromPositionToTime(newEnd)
     );
-      }, 3000);
+      }, 2000);
     }
   }
 
@@ -74,7 +74,7 @@ class DraggableResizableRectangle extends Component {
   };
 
   mapFromTimeToPosition(time){
-    return Math.max(((time / this.MINUTE_TO_SECOND) * this.MINUTE_WIDTH) + this.X_OFFSET, 2);
+    return Math.max(((time / this.MINUTE_TO_SECOND) * this.MINUTE_WIDTH) + this.X_OFFSET, this.X_OFFSET);
   }
 
   mapFromPositionToTime(position){
