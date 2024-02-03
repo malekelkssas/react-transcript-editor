@@ -9,10 +9,10 @@ class SpeakerTimeLine extends React.Component {
   constructor(props) {
     super(props);
 
-    // TODO: make it object
     this.blockIndciesPositionsSetters = {};
     this.dataBlocks= [];
     this.speakers = {},
+    this.SEPERATE_RECTANGLE = 0.5;
     this.state = {
       triggerChange: true,
       mediaDuration: 0
@@ -109,10 +109,10 @@ updateRectangle(index, newStart, newEnd) {
       const leftRecInterval = this.dataBlocks[leftIdx].end - this.dataBlocks[leftIdx].start
       const leftNewStart = rightNewStart + rightRecInterval;
       this.blockIndciesPositionsSetters[rightIdx].setRectanglePosition(rightNewStart);
-      this.blockIndciesPositionsSetters[leftIdx].setRectanglePosition(leftNewStart + 0.5);
+      this.blockIndciesPositionsSetters[leftIdx].setRectanglePosition(leftNewStart + this.SEPERATE_RECTANGLE);
       
       // exhange there blockData postion
-      this.dataBlocks[leftIdx].start = leftNewStart + 0.5;
+      this.dataBlocks[leftIdx].start = leftNewStart + this.SEPERATE_RECTANGLE;
       this.dataBlocks[leftIdx].end = leftNewStart + leftRecInterval;
       this.dataBlocks[rightIdx].start = rightNewStart;
       this.dataBlocks[rightIdx].end = rightNewStart + rightRecInterval;
@@ -151,11 +151,10 @@ updateRectangle(index, newStart, newEnd) {
 
 SpeakerTimeLine.propTypes = {
   transcriptData: PropTypes.object,
-  handleAnalyticsEvents: PropTypes.func,
   videoRef: PropTypes.object.isRequired,
   mediaDuration: PropTypes.string,
   sttJsonType: PropTypes.string,
-  setCurrentTime: PropTypes.func,
+  timedTextEditorRef: PropTypes.object.isRequired,
 };
 
 export default SpeakerTimeLine;

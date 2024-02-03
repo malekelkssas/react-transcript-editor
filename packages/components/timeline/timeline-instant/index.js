@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import styles from "./index.module.css";
 
 class TimeLineInstant extends React.Component {
@@ -34,7 +35,15 @@ class TimeLineInstant extends React.Component {
         </div>
         );
     }
-
 }
+
+TimeLineInstant.propTypes = {
+  timeLineInstant: PropTypes.number.isRequired,
+  isMinLine: PropTypes.bool.isRequired,
+  isMajorLine: PropTypes.bool.isRequired,
+  setCurrentTime: PropTypes.func.isRequired,
+  videoRef: PropTypes.object.isRequired,
+  minuteNumber: PropTypes.number.isRequired,
+};
 
 export default TimeLineInstant;

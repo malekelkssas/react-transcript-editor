@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import style from './index.module.css';
 
 class DraggableResizableRectangle extends Component {
@@ -28,10 +29,9 @@ class DraggableResizableRectangle extends Component {
       size: { width: Math.max(this.mapFromTimeToPosition(this.props.endTime) - this.mapFromTimeToPosition(this.props.startTime), this.MIN_RECTANGLE_WIDTH)},
       isDragging: false,
       isResizing: false,
+      text: this.props.text,
     };
   }
-
-  
   blockIndexSetter(newIndex){
     this.blockIndex = newIndex;
   }
@@ -77,7 +77,8 @@ class DraggableResizableRectangle extends Component {
         this.props.updateQueue.push(newUpdate);
         this.index = this.blockIndex;
         }, 3000);
-    }}
+    }
+  }
     
     getRectangleBoundryPosition = (x, width) => {
       return { startX: x, endX: x + width };
@@ -111,52 +112,53 @@ class DraggableResizableRectangle extends Component {
   handleMouseMove = (event) => {
     const { isDragging, isResizing } = this.state;
     const { clientX } = event;
-    if (this.externalUpdate) return;
-    if (isDragging) { 
-      const movementX = clientX - this.initialMouseX;
-      const newXPosition = this.initialPosition + movementX * this.DRAG_SPEED;
-      const {startX, endX} = this.getRectangleBoundryPosition(newXPosition, this.initialSize);
-      const startTime = this.mapFromPositionToTime(startX);
-      const endTime = this.mapFromPositionToTime(endX);
-      if(startX >= 0 && endTime <= this.props.mediaDuration) {
-        
-        const collision = this.props.checkCollision(this.blockIndex, startTime , endTime );
-        if( !collision.IsCollied || (collision.IsCollied && this.checkCollision) ){
-          if(collision.IsCollied){
-            this.props.exchangeRectanglesBlocks(this.blockIndex, collision.colliedRecIdx);
-            document.removeEventListener('mousemove', this.handleMouseMove);
-            document.removeEventListener('mouseup', this.handleMouseUp);
-          } else{
-          this.setState({
-            position: {
-              x: startX,
-            },
-          });
-          this.props.updateRectangle(this.blockIndex, startTime, endTime);
+    if (!this.externalUpdate){
+      if (isDragging) { 
+        const movementX = clientX - this.initialMouseX;
+        const newXPosition = this.initialPosition + movementX * this.DRAG_SPEED;
+        const {startX, endX} = this.getRectangleBoundryPosition(newXPosition, this.initialSize);
+        const startTime = this.mapFromPositionToTime(startX);
+        const endTime = this.mapFromPositionToTime(endX);
+        if(startX >= 0 && endTime <= this.props.mediaDuration) {
+          
+          const collision = this.props.checkCollision(this.blockIndex, startTime , endTime );
+          if( !collision.IsCollied || (collision.IsCollied && this.checkCollision) ){
+            if(collision.IsCollied){
+              this.props.exchangeRectanglesBlocks(this.blockIndex, collision.colliedRecIdx);
+              document.removeEventListener('mousemove', this.handleMouseMove);
+              document.removeEventListener('mouseup', this.handleMouseUp);
+            } else{
+            this.setState({
+              position: {
+                x: startX,
+              },
+            });
+            this.props.updateRectangle(this.blockIndex, startTime, endTime);
+            }
+            this.checkCollision = false;
+          } else if (collision.IsCollied){
+              this.checkCollision = true;
           }
-          this.checkCollision = false;
-        } else if (collision.IsCollied){
-            this.checkCollision = true;
         }
+      } else if (isResizing) {
+        const movementX = clientX - this.initialMouseX;
+        const newSize = Math.max(this.initialSize + movementX * this.RESIZE_SPEED, this.MIN_RECTANGLE_WIDTH);
+        const {startX, endX} = this.getRectangleBoundryPosition(this.initialPosition, newSize);
+        const startTime = this.mapFromPositionToTime(startX);
+        const endTime = this.mapFromPositionToTime(endX);
+        if(startX >= 0 && endTime <= this.props.mediaDuration) {
+        const collision = this.props.checkCollision(this.blockIndex, startTime , endTime );
+        if(!collision.IsCollied){
+        this.setState({
+          size: {
+            width: newSize,
+          },
+        });
+        this.props.updateRectangle(this.blockIndex, startTime, endTime);
       }
-    } else if (isResizing) {
-      const movementX = clientX - this.initialMouseX;
-      const newSize = Math.max(this.initialSize + movementX * this.RESIZE_SPEED, this.MIN_RECTANGLE_WIDTH);
-      const {startX, endX} = this.getRectangleBoundryPosition(this.initialPosition, newSize);
-      const startTime = this.mapFromPositionToTime(startX);
-      const endTime = this.mapFromPositionToTime(endX);
-      if(startX >= 0 && endTime <= this.props.mediaDuration) {
-      const collision = this.props.checkCollision(this.blockIndex, startTime , endTime );
-      if(!collision.IsCollied){
-      this.setState({
-        size: {
-          width: newSize,
-        },
-      });
-      this.props.updateRectangle(this.blockIndex, startTime, endTime);
     }
   }
-}
+    }
   };
 
   handleMouseUp = () => {
@@ -203,5 +205,19 @@ class DraggableResizableRectangle extends Component {
     );
   }
 }
+
+DraggableResizableRectangle.propTypes = {
+  startTime: PropTypes.number.isRequired,
+  endTime: PropTypes.number.isRequired,
+  blockIndex: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
+  text: PropTypes.string.isRequired,
+  checkCollision: PropTypes.func.isRequired,
+  updateRectangle: PropTypes.func.isRequired,
+  mediaDuration: PropTypes.number.isRequired,
+  exchangeRectanglesBlocks: PropTypes.func.isRequired,
+  updateQueue: PropTypes.array.isRequired,
+  blockIndciesPositionsSetters: PropTypes.object.isRequired,
+};
 
 export default DraggableResizableRectangle;

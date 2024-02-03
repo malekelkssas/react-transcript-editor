@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './index.module.css';
-import { timecodeToSeconds } from '../../../util/timecode-converter/index.js';
 import ResizableRectangle from '../resizable-rectangle/index.js';
 
 class SpeakerRowTimeLine extends React.Component {
@@ -57,7 +57,6 @@ class SpeakerRowTimeLine extends React.Component {
               index={recIndex}
               mediaDuration={this.mediaDuration}
               exchangeRectanglesBlocks={this.props.exchangeRectanglesBlocks}
-              updateStartAndEndTimes={this.props.updateStartAndEndTimes}
               blockIndciesPositionsSetters={this.props.blockIndciesPositionsSetters}
               updateQueue={this.updateQueue}
             />
@@ -69,5 +68,17 @@ class SpeakerRowTimeLine extends React.Component {
     );
   }
 }
+
+SpeakerRowTimeLine.propTypes = {
+  mediaDuration: PropTypes.number.isRequired,
+  speaker: PropTypes.string.isRequired,
+  rectanglesIndecies: PropTypes.array.isRequired,
+  dataBlocks: PropTypes.array.isRequired,
+  blockIndciesPositionsSetters: PropTypes.object.isRequired,
+  checkCollision: PropTypes.func.isRequired,
+  updateRectangle: PropTypes.func.isRequired,
+  exchangeRectanglesBlocks: PropTypes.func.isRequired,
+  updateStartAndEndTimes: PropTypes.func.isRequired,
+};
 
 export default SpeakerRowTimeLine;

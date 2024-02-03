@@ -26,33 +26,18 @@ class CustomEditor extends React.Component {
         onWordClick: this.handleWordClick,
         handleAnalyticsEvents: this.props.handleAnalyticsEvents,
         isEditable: this.props.isEditable,
-        triggerContentTimeChangeBlocks: this.props.triggerContentTimeChangeBlocks,
       }
     };
   };
 
   shouldComponentUpdate(nextProps) {
     // https://stackoverflow.com/questions/39182657/best-performance-method-to-check-if-contentstate-changed-in-draftjs-or-just-edi
-    if (nextProps.editorState !== this.props.editorState
-      || nextProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks) {
-        // console.log("here");
-      return true;
-    }
-
-    if (nextProps.isEditable !== this.props.isEditable) {
+    if (nextProps.isEditable !== this.props.isEditable || nextProps.editorState !== this.props.editorState) {
       return true;
     }
 
     return false;
   }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.editorState !== this.props.editorState
-  //     || prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   handleOnChange = e => {
     this.props.onChange(e);

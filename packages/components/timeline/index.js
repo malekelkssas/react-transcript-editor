@@ -58,7 +58,6 @@ class TimeLine extends React.Component {
 }
 
 TimeLine.propTypes = {
-  handleAnalyticsEvents: PropTypes.func,
   videoRef: PropTypes.object.isRequired,
   mediaDuration: PropTypes.string,
   setCurrentTime: PropTypes.func,
