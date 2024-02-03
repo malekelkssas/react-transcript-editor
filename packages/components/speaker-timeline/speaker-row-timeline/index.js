@@ -7,22 +7,34 @@ class SpeakerRowTimeLine extends React.Component {
   constructor(props) {
     super(props);
     this.rectangles = this.props.rectangles;
-    this.mediaDuration = timecodeToSeconds(this.props.mediaDuration);
+    this.mediaDuration = this.props.mediaDuration;
+    this.updateQueue = [];
+    this.intervalId = null;
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    let update = false;
+    if(nextProps.mediaDuration !== this.mediaDuration){
+      this.mediaDuration = nextProps.mediaDuration;
+      update = true;
+    }
+    return update;
   }
 
-  checkCollision(index, newStart, newEnd) {
-    const prevRectangle = this.rectangles[index - 1];
-    const nextRectangle = this.rectangles[index + 1];
-    return (prevRectangle && prevRectangle.end > newStart) || (nextRectangle && nextRectangle.start < newEnd);
+  componentDidMount() {
+    this.intervalId = setInterval(this.processUpdates, 1000);
   }
 
-  updateRectangle(index, newStart, newEnd) {
-    this.rectangles[index] = { start: newStart, end: newEnd };
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
-  updateStartAndEndTimes = (blockKey, newStartTime, newEndTime) => {
-    this.props.updateStartAndEndTimes(blockKey, newStartTime, newEndTime);
-  }
+  processUpdates = () => {
+    if (this.updateQueue.length > 0) {
+      const update = this.updateQueue.shift();
+      this.props.updateStartAndEndTimes(update.index, update.start, update.end);
+      update.setExternalUpdateToFalse();
+    }
+  };
 
   render() {
     return (
@@ -31,21 +43,27 @@ class SpeakerRowTimeLine extends React.Component {
           {this.props.speaker.substring(0, 5)}
         </div>
       <div className={styles.lineContainer}>
-        {this.rectangles.map((rectangle, index) => (
-          <div className={styles.speakerLineRow} key={`speaker-${this.props.speaker}-rectangle-${index}`}>
-          <ResizableRectangle
-            startTime={rectangle.start}
-            endTime={rectangle.end}
-            blockKey={rectangle.key}
-            text={rectangle.text}
-            checkCollision={this.checkCollision.bind(this)}
-            updateRectangle={this.updateRectangle.bind(this)}
-            index={index}
-            mediaDuration={this.mediaDuration}
-            updateStartAndEndTimes={this.updateStartAndEndTimes}
-          />
-          </div>
-        ))}
+        {this.props.rectanglesIndecies.map((recIndex) => {
+          const rectangle = this.props.dataBlocks[recIndex];
+          return (
+            <div className={styles.speakerLineRow} key={`speaker-${this.props.speaker}-rectangle-${recIndex}`}>
+            <ResizableRectangle
+              startTime={rectangle.start}
+              endTime={rectangle.end}
+              blockIndex={recIndex}
+              text={rectangle.text}
+              checkCollision={this.props.checkCollision}
+              updateRectangle={this.props.updateRectangle}
+              index={recIndex}
+              mediaDuration={this.mediaDuration}
+              exchangeRectanglesBlocks={this.props.exchangeRectanglesBlocks}
+              updateStartAndEndTimes={this.props.updateStartAndEndTimes}
+              blockIndciesPositionsSetters={this.props.blockIndciesPositionsSetters}
+              updateQueue={this.updateQueue}
+            />
+            </div>
+          );
+        })}
       </div>
     </td>
     );

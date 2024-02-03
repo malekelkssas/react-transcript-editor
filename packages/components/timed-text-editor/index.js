@@ -47,8 +47,7 @@ class TimedTextEditor extends React.Component {
       prevProps.timecodeOffset !== this.props.timecodeOffset ||
       prevProps.showSpeakers !== this.props.showSpeakers ||
       prevProps.showTimecodes !== this.props.showTimecodes ||
-      prevProps.isEditable !== this.props.isEditable ||
-      prevProps.triggerContentTimeChangeBlocks !== this.props.triggerContentTimeChangeBlocks
+      prevProps.isEditable !== this.props.isEditable
     ) {
       // forcing a re-render is an expensive operation and
       // there might be a way of optimising this at a later refactor (?)
@@ -164,29 +163,6 @@ class TimedTextEditor extends React.Component {
       return newEditorState;
     }
   }
-
-  // AllahKareem() {
-  //   const blocks = this.props.contentTimeChangeBlocks
-  //   this.setState({ originalState: convertToRaw(convertFromRaw(blocks)) }, () =>{
-  //     // // console.log("AllahKareem originalState", this.state.originalState);
-  //     // const newEditorState = EditorState.push(
-  //     //   this.state.editorState,
-  //     //   this.state.originalState
-  //     // );
-  //     const newContentState = convertFromRaw(blocks);
-  //   const decorator = this.state.editorState.getDecorator();
-  //   const newState = EditorState.createWithContent(newContentState, decorator);
-  //   const newEditorState = EditorState.push(
-  //     newState,
-  //     newContentState
-  //   );
-  //   this.setState({ editorState: newEditorState }, () =>{
-  //     console.log("AllahKareem", convertToRaw(this.state.editorState.getCurrentContent()));
-  //     // this.forceRenderDecorator();
-  //     this.changeBlocks = false;
-  //   });
-  //     });
-  // }
 
   loadData() {
     if (this.props.transcriptData !== null) {
@@ -315,32 +291,50 @@ class TimedTextEditor extends React.Component {
     );
   };
 
+  mapWordTimesToNewSentence(oldSentenceStart, oldSentenceEnd, newSentenceStart, newSentenceEnd, wordOldStart, wordOldEnd) {
+    const sentenceRation = (newSentenceEnd - newSentenceStart) / (oldSentenceEnd - oldSentenceStart);
+    const wordNewStart = newSentenceStart + (wordOldStart - oldSentenceStart) * sentenceRation;
+    const wordNewEnd = newSentenceStart + (wordOldEnd - oldSentenceStart) * sentenceRation;
 
-  updateSpeakerSentenceStartTime = (key, newStartTime) => {
+    return { start:wordNewStart, end: wordNewEnd };
+}
+  updateSpeakerSentenceStartTime = (key, newStartTime, newEndTime) => {
     const ContentState = this.state.editorState.getCurrentContent();
     const contentToUpdate = convertToRaw(ContentState);
     contentToUpdate.blocks.forEach(block => {
       if (block.key === key) {
+        const oldStartTime = block.data.start;
+        const oldEndTime = block.data.words[block.data.words.length - 1].end;
         block.data.start = newStartTime;
-        block.data.words[0].start = newStartTime;
-        contentToUpdate.entityMap[block.data.words[0].index].data.start = newStartTime;
+        block.data.words.forEach((word) => {
+          const { start, end } = this.mapWordTimesToNewSentence(oldStartTime, oldEndTime, newStartTime, newEndTime, word.start, word.end);
+          word.start  = start;
+          word.end = end;
+          const entitiMapIdx = word.index;
+          contentToUpdate.entityMap[entitiMapIdx].data.start = start;
+          contentToUpdate.entityMap[entitiMapIdx].data.end = end;
+        })
       }
-    })
-  
-    return convertFromRaw(contentToUpdate);
+    });
+    contentToUpdate.blocks = contentToUpdate.blocks.sort((a, b) => a.data.start - b.data.start);
+    
+    
+    const keyValueArray = Object.entries(contentToUpdate.entityMap);
+    const sortedArray = keyValueArray.sort((a, b) => a[1].data.start - b[1].data.start);
+    const sortedObject = Object.fromEntries(sortedArray);
+    contentToUpdate.entityMap = sortedObject;
+    this.setEditorContentState(contentToUpdate);
+    this.setEditorNewTimeStateUpdate( convertToRaw(convertFromRaw(contentToUpdate)));
   }
   
   setEditorNewTimeStateUpdate = newContentState => {
-    
-    const neworig = convertToRaw(newContentState);
-    console.log({neworig});
 
     this.setState(
       () => ({
-        originalState: neworig
+        originalState: newContentState
       }),
       () => {
-          this.updateTimestampsForEditorState();
+          this.updateTimestampsForEditorState();   
       }
     );
   };
