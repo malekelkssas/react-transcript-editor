@@ -291,6 +291,16 @@ class TimedTextEditor extends React.Component {
     );
   };
 
+  /**
+   * map word times to new sentence
+   * @param {*Number} oldSentenceStart 
+   * @param {*Number} oldSentenceEnd 
+   * @param {*Number} newSentenceStart 
+   * @param {*Number} newSentenceEnd 
+   * @param {*Number} wordOldStart 
+   * @param {*Number} wordOldEnd 
+   * @returns {start: Number, end: Number}
+   */
   mapWordTimesToNewSentence(oldSentenceStart, oldSentenceEnd, newSentenceStart, newSentenceEnd, wordOldStart, wordOldEnd) {
     const sentenceRation = (newSentenceEnd - newSentenceStart) / (oldSentenceEnd - oldSentenceStart);
     const wordNewStart = newSentenceStart + (wordOldStart - oldSentenceStart) * sentenceRation;
@@ -298,10 +308,17 @@ class TimedTextEditor extends React.Component {
 
     return { start:wordNewStart, end: wordNewEnd };
 }
-  updateSpeakerSentenceStartTime = (key, newStartTime, newEndTime) => {
-    const ContentState = this.state.editorState.getCurrentContent();
-    const contentToUpdate = convertToRaw(ContentState);
-    contentToUpdate.blocks.forEach(block => {
+
+/**
+ * Update speaker sentence start time
+ * @param {String} key - block key
+ * @param {Object} ContentState - draftJs content state
+ * @param {Number} newStartTime - new start time
+ * @param {Number} newEndTime - new end time
+ * */
+
+  updateSpeakerSentenceTime = (key, ContentState, newStartTime, newEndTime) => {
+    ContentState.blocks.forEach(block => {
       if (block.key === key) {
         const oldStartTime = block.data.start;
         const oldEndTime = block.data.words[block.data.words.length - 1].end;
@@ -311,30 +328,46 @@ class TimedTextEditor extends React.Component {
           word.start  = start;
           word.end = end;
           const entitiMapIdx = word.index;
-          contentToUpdate.entityMap[entitiMapIdx].data.start = start;
-          contentToUpdate.entityMap[entitiMapIdx].data.end = end;
+          ContentState.entityMap[entitiMapIdx].data.start = start;
+          ContentState.entityMap[entitiMapIdx].data.end = end;
         })
       }
     });
-    contentToUpdate.blocks = contentToUpdate.blocks.sort((a, b) => a.data.start - b.data.start);
     
-    
-    const keyValueArray = Object.entries(contentToUpdate.entityMap);
-    const sortedArray = keyValueArray.sort((a, b) => a[1].data.start - b[1].data.start);
-    const sortedObject = Object.fromEntries(sortedArray);
-    contentToUpdate.entityMap = sortedObject;
-    this.setEditorContentState(contentToUpdate);
-    this.setEditorNewTimeStateUpdate( convertToRaw(convertFromRaw(contentToUpdate)));
+    return ContentState;
   }
-  
-  setEditorNewTimeStateUpdate = newContentState => {
+
+  setEditorNewContentTimes = (key, newStartTime, newEndTime) => {
+    const contentState = convertToRaw(this.state.editorState.getCurrentContent());
+    const contentToUpdate = this.updateSpeakerSentenceTime(key, contentState, newStartTime, newEndTime);
+    this.setEditorContentState(contentToUpdate);
+    this.setEditorOriginalStateForNewTimeStateUpdate( convertToRaw(convertFromRaw(contentToUpdate)));
+  }
+
+  reArrangeContentState(contentToUpdate){
+    
+    contentToUpdate.blocks = contentToUpdate.blocks.sort((a, b) => a.data.start - b.data.start);
+     /*
+    * convert the entityMap object to an array of key-value pairs
+    * sort the array by the start time of the word
+    * convert the array back to an object 
+    * */
+     const keyValueArray = Object.entries(contentToUpdate.entityMap);
+     const sortedArray = keyValueArray.sort((a, b) => a[1].data.start - b[1].data.start);
+     const sortedObject = Object.fromEntries(sortedArray);
+     contentToUpdate.entityMap = sortedObject;
+    return contentToUpdate;
+  }
+  setEditorOriginalStateForNewTimeStateUpdate = newContentState => {
 
     this.setState(
       () => ({
         originalState: newContentState
       }),
       () => {
-          this.updateTimestampsForEditorState();   
+          this.updateTimestampsForEditorState();  
+          const data = this.getEditorContent( this.props.autoSaveContentType, this.props.title); 
+          this.props.handleAutoSaveChanges(data);
       }
     );
   };

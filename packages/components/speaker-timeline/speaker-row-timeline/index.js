@@ -10,30 +10,44 @@ class SpeakerRowTimeLine extends React.Component {
     this.mediaDuration = this.props.mediaDuration;
     this.updateQueue = [];
     this.intervalId = null;
+    this.isExhangeHappened = false;
   }
   shouldComponentUpdate(nextProps, nextState) {
-    let update = false;
     if(nextProps.mediaDuration !== this.mediaDuration){
       this.mediaDuration = nextProps.mediaDuration;
-      update = true;
+      return true;
     }
-    return update;
+    return false;
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.processUpdates, 1000);
+    this.intervalId = setInterval(this.processUpdates.bind(this), 2000);
   }
 
   componentWillUnmount() {
     clearInterval(this.intervalId);
   }
 
+  pushUpdateToQueue = (update) => {
+    const { index, start, end } = update;
+    this.updateQueue.push({ index, start, end });
+  };
+
   processUpdates = () => {
-    if (this.updateQueue.length > 0) {
+    if (this.updateQueue.length > 0 && !this.isExhangeHappened) {
       const update = this.updateQueue.shift();
       this.props.updateStartAndEndTimes(update.index, update.start, update.end);
-      update.setExternalUpdateToFalse();
     }
+  };
+
+  removeUpdateFromQueue = (index) => {
+    this.updateQueue = this.updateQueue.filter((update) => update.index !== index);
+  };
+
+  exchangeRectanglesBlocks = (blockIndex, contentToUpdate, newStartTime, newEndTime) => {
+    this.isExhangeHappened = true;
+    this.props.exchangeRectanglesBlocks(blockIndex, contentToUpdate, newStartTime, newEndTime);
+    this.isExhangeHappened = false;
   };
 
   render() {
@@ -48,17 +62,18 @@ class SpeakerRowTimeLine extends React.Component {
           return (
             <div className={styles.speakerLineRow} key={`speaker-${this.props.speaker}-rectangle-${recIndex}`}>
             <ResizableRectangle
+              blockIndex={recIndex}
               startTime={rectangle.start}
               endTime={rectangle.end}
-              blockIndex={recIndex}
               text={rectangle.text}
+              mediaDuration={this.mediaDuration}
               checkCollision={this.props.checkCollision}
               updateRectangle={this.props.updateRectangle}
-              index={recIndex}
-              mediaDuration={this.mediaDuration}
-              exchangeRectanglesBlocks={this.props.exchangeRectanglesBlocks}
-              blockIndciesPositionsSetters={this.props.blockIndciesPositionsSetters}
-              updateQueue={this.updateQueue}
+              exchangeRectanglesBlocks={this.exchangeRectanglesBlocks.bind(this)}
+              pushUpdateToQueue={this.pushUpdateToQueue.bind(this)}
+              removeUpdateFromQueue={this.removeUpdateFromQueue.bind(this)}
+              resizableRectangleComponentHandles={this.props.resizableRectangleComponentHandles}
+              getDataBlockTextByIndex={this.props.getDataBlockTextByIndex}
             />
             </div>
           );
@@ -74,11 +89,12 @@ SpeakerRowTimeLine.propTypes = {
   speaker: PropTypes.string.isRequired,
   rectanglesIndecies: PropTypes.array.isRequired,
   dataBlocks: PropTypes.array.isRequired,
-  blockIndciesPositionsSetters: PropTypes.object.isRequired,
+  resizableRectangleComponentHandles: PropTypes.object.isRequired,
   checkCollision: PropTypes.func.isRequired,
   updateRectangle: PropTypes.func.isRequired,
   exchangeRectanglesBlocks: PropTypes.func.isRequired,
   updateStartAndEndTimes: PropTypes.func.isRequired,
+  getDataBlockTextByIndex: PropTypes.func.isRequired,
 };
 
 export default SpeakerRowTimeLine;

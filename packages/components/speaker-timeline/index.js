@@ -9,12 +9,11 @@ class SpeakerTimeLine extends React.Component {
   constructor(props) {
     super(props);
 
-    this.blockIndciesPositionsSetters = {};
+    this.resizableRectangleComponentHandles = {};
     this.dataBlocks= [];
     this.speakers = {},
     this.SEPERATE_RECTANGLE = 0.5;
     this.state = {
-      triggerChange: true,
       mediaDuration: 0
     }
   }
@@ -23,31 +22,48 @@ class SpeakerTimeLine extends React.Component {
     this.loadData();
   }
 
-  shouldComponentUpdate = (nextProps, nextState) => { 
-    // TODO: check if the mediaUrl has changed
-    let update = false;
+  shouldComponentUpdate = (nextProps, nextState) => {
+  
     if(timecodeToSeconds(nextProps.mediaDuration) !== this.state.mediaDuration){
       this.setState({ mediaDuration: timecodeToSeconds(nextProps.mediaDuration) });
-      update = true;
+      return true;
     }
-    return update || nextState.triggerChange !== this.state.triggerChange || nextProps.transcriptData != this.props.transcriptData;
+
+    if (nextProps !== this.props) return true;
+
+    if (nextState !== this.state) return true;
+
+    return false;
   };
 
-  
-
-  mapWordTimesToNewSentence(oldSentenceStart, oldSentenceEnd, newSentenceStart, newSentenceEnd, wordOldStart, wordOldEnd) {
-    const relativePosition = (wordOldStart - oldSentenceStart) / (oldSentenceEnd - oldSentenceStart);
-    const wordNewStart = newSentenceStart + relativePosition * (newSentenceEnd - newSentenceStart);
-    const wordNewEnd = wordNewStart + (wordOldEnd - wordOldStart);
-
-    return { start:wordNewStart, end: wordNewEnd };
-}
-
-
-
+  /**
+   * update the start and end times of the speaker block in the timed-text-editor
+   * @param {*Number} blockidx 
+   * @param {*Number} newStartTime 
+   * @param {*Number} newEndTime 
+   */
 updateStartAndEndTimes = (blockidx, newStartTime, newEndTime) => {
   const key = convertToRaw(this.props.timedTextEditorRef.current.state.editorState.getCurrentContent()).blocks[blockidx].key;
-   this.props.timedTextEditorRef.current.updateSpeakerSentenceStartTime(key, newStartTime, newEndTime);
+  this.props.timedTextEditorRef.current.setEditorNewContentTimes(key, newStartTime, newEndTime);
+}
+
+/**
+ * 
+ * @param {*Number} blockidx 
+ * @param {object} contentToUpdate.entityMap - draftJs entity maps - used by convertFromRaw
+ * @param {object} contentToUpdate.blocks - draftJs blocks - used by convertFromRaw
+ * @param {*Number} newStartTime 
+ * @param {*Number} newEndTime 
+ * @returns {object} - {entityMap, blocks}
+ */
+exhangeTwoDataBlocks = (blockidx, contentToUpdate, newStartTime, newEndTime) => {
+  const key = convertToRaw(this.props.timedTextEditorRef.current.state.editorState.getCurrentContent()).blocks[blockidx].key;
+  return this.props.timedTextEditorRef.current.updateSpeakerSentenceTime(key, contentToUpdate, newStartTime, newEndTime);
+}
+
+getDataBlockTextByIndex(index){
+  const text = convertToRaw(this.props.timedTextEditorRef.current.state.editorState.getCurrentContent()).blocks[index].text;
+  return text;
 }
 
 checkCollision(index, newStart, newEnd) {
@@ -92,38 +108,55 @@ updateRectangle(index, newStart, newEnd) {
 
       this.dataBlocks= dataBlocks
       this.speakers = tmpSpeakers;
-      this.setState({ triggerChange: !this.state.triggerChange  });
     }
 
     exchangeRectanglesBlocks(firstIdx, secondIdx){
+      
       const leftIdx = Math.min(firstIdx, secondIdx);
       const rightIdx = Math.max(firstIdx, secondIdx);
-
-      // set there new indecies
-      this.blockIndciesPositionsSetters[leftIdx].blockIndexSetter(rightIdx);
-      this.blockIndciesPositionsSetters[rightIdx].blockIndexSetter(leftIdx);
       
       // set there new positions
+      // check the original idx and from right to left or left to right
       const rightNewStart = this.dataBlocks[leftIdx].start
       const rightRecInterval = this.dataBlocks[rightIdx].end - this.dataBlocks[rightIdx].start
       const leftRecInterval = this.dataBlocks[leftIdx].end - this.dataBlocks[leftIdx].start
-      const leftNewStart = rightNewStart + rightRecInterval;
-      this.blockIndciesPositionsSetters[rightIdx].setRectanglePosition(rightNewStart);
-      this.blockIndciesPositionsSetters[leftIdx].setRectanglePosition(leftNewStart + this.SEPERATE_RECTANGLE);
+      const leftNewStart = rightNewStart + rightRecInterval + this.SEPERATE_RECTANGLE;
+
+      // set rectangles new positions
+      this.resizableRectangleComponentHandles[leftIdx].setRectanglePosition(leftNewStart);
+      this.resizableRectangleComponentHandles[rightIdx].setRectanglePosition(rightNewStart);
+
+      // set rectangles new indecies
+      this.resizableRectangleComponentHandles[leftIdx].blockIndexSetter(rightIdx);
+      this.resizableRectangleComponentHandles[rightIdx].blockIndexSetter(leftIdx);
+
+      // update the content state in timed-text-editor
+      let ContentState = convertToRaw(this.props.timedTextEditorRef.current.state.editorState.getCurrentContent());
+      ContentState = this.exhangeTwoDataBlocks(leftIdx, ContentState, leftNewStart, leftNewStart + leftRecInterval);  
+      ContentState = this.exhangeTwoDataBlocks(rightIdx, ContentState, rightNewStart, rightNewStart + rightRecInterval);
+      ContentState = this.props.timedTextEditorRef.current.reArrangeContentState(ContentState);
+      this.props.timedTextEditorRef.current.setEditorContentState(ContentState);
+      this.props.timedTextEditorRef.current.setEditorOriginalStateForNewTimeStateUpdate( convertToRaw(convertFromRaw(ContentState)));
       
-      // exhange there blockData postion
-      this.dataBlocks[leftIdx].start = leftNewStart + this.SEPERATE_RECTANGLE;
+      // set there new dataBlocks
+      this.dataBlocks[leftIdx].start = leftNewStart;
       this.dataBlocks[leftIdx].end = leftNewStart + leftRecInterval;
       this.dataBlocks[rightIdx].start = rightNewStart;
       this.dataBlocks[rightIdx].end = rightNewStart + rightRecInterval;
+
+      // exchange there blockData postion duo to change there indecies
       const tmpBlockData = this.dataBlocks[leftIdx];
       this.dataBlocks[leftIdx] = this.dataBlocks[rightIdx];
       this.dataBlocks[rightIdx] = tmpBlockData;
 
-      const tmpBlockIndciesPositionsSetters = this.blockIndciesPositionsSetters[rightIdx];
-      this.blockIndciesPositionsSetters[rightIdx] = this.blockIndciesPositionsSetters[leftIdx];
-      this.blockIndciesPositionsSetters[leftIdx] = tmpBlockIndciesPositionsSetters;
+      // exchange there speakers indecies
+      const tmpResizableRectangleComponentHandle = this.resizableRectangleComponentHandles[leftIdx];
+      this.resizableRectangleComponentHandles[leftIdx] = this.resizableRectangleComponentHandles[rightIdx];
+      this.resizableRectangleComponentHandles[rightIdx] = tmpResizableRectangleComponentHandle;
 
+      // allow to update the rectangles
+      this.resizableRectangleComponentHandles[leftIdx].setExternalUpdateToFalse();
+      this.resizableRectangleComponentHandles[rightIdx].setExternalUpdateToFalse();
     }
 
   render() {
@@ -136,11 +169,12 @@ updateRectangle(index, newStart, newEnd) {
         speaker={speaker}
         rectanglesIndecies={this.speakers[speaker]}
         dataBlocks={this.dataBlocks}
-        blockIndciesPositionsSetters={this.blockIndciesPositionsSetters}
+        resizableRectangleComponentHandles={this.resizableRectangleComponentHandles}
         checkCollision={this.checkCollision.bind(this)}
         updateRectangle={this.updateRectangle.bind(this)}
         exchangeRectanglesBlocks={this.exchangeRectanglesBlocks.bind(this)}
         updateStartAndEndTimes={this.updateStartAndEndTimes.bind(this)}
+        getDataBlockTextByIndex={this.getDataBlockTextByIndex.bind(this)}
         />
         )
         )}

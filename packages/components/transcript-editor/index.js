@@ -494,7 +494,7 @@ class TranscriptEditor extends React.Component {
         {this.props.mediaUrl ? 
         <section className={style.videoTimeline}>
           <table className={style.videoTimelineTable}>
-            {this.videoRef && <tbody className={style.videoTimelineBody}>
+            {this.videoRef && this.props.transcriptData && <tbody className={style.videoTimelineBody}>
               {timeline}
               {speakertimeline}
             </tbody>}
